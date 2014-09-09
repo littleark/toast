@@ -152,7 +152,7 @@
 
 		//AXIS
 
-		var xAxis = d3.svg.axis().scale(xscale);
+		var xAxis = d3.svg.axis().scale(xscale).orient("top");
 		var yAxis = d3.svg.axis().scale(yscale).orient("right");
 
 		var axes=svg.append("g")
