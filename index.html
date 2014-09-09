@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<title>toast</title>
 	<link rel="stylesheet" href="css/toast.css">
+	<script type="text/javascript" src="js/vendors/dat.gui.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js" charset="utf-8"></script>
 	<script>window.d3||document.write('<script src="js/vendors/d3/d3.min.js"><\/script>');</script>
 </head>
@@ -56,17 +57,19 @@
 		console.log(data)
 
 		function calculateAllPositions() {
+			data.positions=[];
 			for(var t=0;t<data.end.dT;t+=0.01) {
 				var y=1/2*data.physics.g*(t*t);
 				//console.log(y)
 				var current=calculateTimeAngle(y);
-				console.log(t,data.table.y-y,current.thetaDeg)
+				//console.log(t,data.table.y-y,current.thetaDeg)
 
 				data.positions.push({
 					t:t,
 					y:data.table.y-y,
 					rad:current.thetaRad,
-					deg:current.thetaDeg
+					deg:current.thetaDeg,
+					p:data.positions.length
 				})
 
 			}
@@ -75,7 +78,8 @@
 				t:data.end.dT,
 				y:0,
 				rad:data.end.thetaRad,
-				deg:data.end.thetaDeg
+				deg:data.end.thetaDeg,
+				p:data.positions.length
 			})
 		}
 		calculateAllPositions();
@@ -144,36 +148,7 @@
 
 
 
-		var toasts=toast.selectAll("g.toast")
-					.data(data.positions)
-					.enter()
-					.append("g")
-						.attr("rel",function(d,i){
-							return i+": "+d.y+","+d.deg;
-						})
-						.attr("transform",function(d,i){
-							var x=xscale(data.table.w+data.toast.h),//+0.3*i,
-								y=yscale(d.y)
-							return "translate("+x+","+y+")rotate("+d.deg+")"
-						})
-
-		toasts.append("rect")
-				.attr("x",-xscale(data.toast.l/2))
-				.attr("y",-xscale(0.01/2))
-				.attr("width",xscale(data.toast.l))
-				.attr("height",xscale(0.01))
-
-		toasts.append("line")
-				.attr("class","butter")
-				.attr("x1",-xscale(data.toast.l/2))
-				.attr("y1",-xscale(0.01/2))
-				.attr("x2",xscale(data.toast.l/2))
-				.attr("y2",-xscale(0.01/2))
-
-		toasts.append("circle")
-				.attr("cx",0)
-				.attr("cy",0)
-				.attr("r",1)
+		update();
 
 		//AXIS
 
@@ -194,8 +169,85 @@
 	      .attr("transform", "translate("+(WIDTH-(margins.left+margins.right))+",0)")
 	      .call(yAxis)
 
+	    function update() {
+	    	data.end=calculateTimeAngle();
+	    	calculateAllPositions();
 
+	    	var toasts=toast.selectAll("g.toast")
+						.data(data.positions,function(d,i){
+							return "p"+d.p;
+						});
 
+			var new_toasts=toasts
+								.enter()
+								.append("g")
+									.attr("class","toast")
+									.attr("rel",function(d){
+										console.log("rel",d.p)
+										return d.p+": "+d.y+","+d.deg;
+									})
+							
+
+			toasts.exit().remove();
+
+			new_toasts.append("rect")
+					.attr("x",-xscale(data.toast.l/2))
+					.attr("y",-xscale(0.01/2))
+					.attr("width",xscale(data.toast.l))
+					.attr("height",xscale(0.01))
+
+			new_toasts.append("line")
+					.attr("class","butter")
+					.attr("x1",-xscale(data.toast.l/2))
+					.attr("y1",-xscale(0.01/2))
+					.attr("x2",xscale(data.toast.l/2))
+					.attr("y2",-xscale(0.01/2))
+
+			new_toasts.append("circle")
+					.attr("cx",0)
+					.attr("cy",0)
+					.attr("r",1)
+
+			toasts
+				.attr("transform",function(d,i){
+					var x=xscale(data.table.w+data.toast.h),//+0.3*i,
+						y=yscale(d.y)
+					return "translate("+x+","+y+")rotate("+d.deg+")"
+				});
+
+			table
+				.attr("transform",function(){
+
+					var x=xscale(data.table.x),
+						y=yscale(data.table.y);
+
+					return "translate("+x+","+y+")";
+				});
+
+	    }
+
+	    var gui = new dat.GUI();
+		//gui.add(text, 'message');
+		//gui.add(text, 'speed', -5, 5);
+		//gui.add(text, 'displayOutline');
+		//gui.add(text, 'explode');
+		var controllers={
+			tableH:gui.add(data.table, "y", 0.1,0.9),
+			overhang:gui.add(data.toast, "h", 0.01,0.05).step(0.01)
+		}
+		controllers["tableH"].onChange(function(value) {
+		  // Fires on every change, drag, keypress, etc.
+		});
+
+		controllers["tableH"].onFinishChange(function(value) {
+		  // Fires when a controller loses focus.
+		  update();
+		});
+
+		controllers["overhang"].onFinishChange(function(value) {
+		  // Fires when a controller loses focus.
+		  update();
+		});
 
 	</script>
 </body>
