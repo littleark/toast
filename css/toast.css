@@ -1,0 +1,55 @@
+body {
+  background: #fff;  
+}
+
+#toast svg {
+	
+	font-family: sans-serif;
+}
+#toast svg g#table rect {
+	stroke:#999;
+	fill:#ddd;
+	stroke-width:1;
+	shape-rendering: crispEdges;
+}
+
+#toast #table line.dropline {
+	stroke:#aaa;
+	stroke-width:1;
+	fill:none;
+	shape-rendering: crispEdges;
+	stroke-dasharray: 2,2;
+}
+#toast #axes .axis path {
+	stroke:#999;
+	stroke-width:1;
+	fill:none;
+	shape-rendering: crispEdges;
+}
+#toast #axes .axis .tick line {
+	stroke:#aaa;
+	stroke-width:1;
+	fill:none;
+	shape-rendering: crispEdges;
+}
+#toast #axes .axis .tick text{
+	font-size: 10px;
+	fill:#aaa;
+}
+
+#toast g circle {
+	fill:#333;
+	fill-opacity:0.8;
+	stroke:none;
+}
+#toast g rect {
+	fill:#333;
+	fill-opacity:0.2;
+	stroke:none;
+}
+#toast g line.butter {
+	stroke:#aaa;
+	stroke-width:1;
+	fill:none;
+	
+}
