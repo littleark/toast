@@ -144,9 +144,17 @@
 		var toast=world.append("g")
 					.attr("id","toast");
 
-		data.toasts=[];
-
-
+		var angle=world.append("g")
+					.attr("class","angle")
+					.attr("transform",function(){
+						var x=xscale(data.table.x+data.table.w)+30,
+							y=yscale.range()[0]-10;
+						return "translate("+x+","+y+")"
+					})
+					.append("text")
+						.attr("x",0)
+						.attr("y",0)
+						.html(d3.round(data.end.thetaDeg,3)+"&deg;")
 
 		update();
 
@@ -223,6 +231,8 @@
 
 					return "translate("+x+","+y+")";
 				});
+
+			angle.html(d3.round(data.end.thetaDeg,3)+"&deg;")
 
 	    }
 

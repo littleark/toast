@@ -20,6 +20,12 @@ body {
 	shape-rendering: crispEdges;
 	stroke-dasharray: 2,2;
 }
+
+#toast g.angle text {
+	fill:#555;
+	font-size:12px;
+}
+
 #toast #axes .axis path {
 	stroke:#999;
 	stroke-width:1;
