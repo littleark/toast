@@ -194,6 +194,15 @@
 										//console.log("rel",d.p)
 										return d.p+": "+d.y+","+d.deg;
 									})
+									.attr("transform",function(d,i){
+										var x=xscale(data.table.w+data.toast.h),
+											y=yscale(d.y),
+											dy=0;//y-yscale(data.table.y);
+
+
+
+										return "translate("+(x+dy)+","+y+")"
+									});
 							
 
 			toasts.exit().remove();
@@ -217,6 +226,8 @@
 					.attr("r",1)
 
 			toasts
+				.transition()
+				.duration(1000)
 				.attr("transform",function(d,i){
 					var x=xscale(data.table.w+data.toast.h),
 						y=yscale(d.y),
@@ -228,6 +239,8 @@
 				});
 
 			table
+				.transition()
+				.duration(1000)
 				.attr("transform",function(){
 
 					var x=xscale(data.table.x),
