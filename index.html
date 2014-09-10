@@ -218,9 +218,13 @@
 
 			toasts
 				.attr("transform",function(d,i){
-					var x=xscale(data.table.w+data.toast.h),//+0.3*i,
-						y=yscale(d.y)
-					return "translate("+x+","+y+")rotate("+d.deg+")"
+					var x=xscale(data.table.w+data.toast.h),
+						y=yscale(d.y),
+						dy=0;//y-yscale(data.table.y);
+
+
+
+					return "translate("+(x+dy)+","+y+")rotate("+d.deg+")"
 				});
 
 			table
@@ -228,6 +232,7 @@
 
 					var x=xscale(data.table.x),
 						y=yscale(data.table.y);
+
 
 					return "translate("+x+","+y+")";
 				});
@@ -243,7 +248,8 @@
 		//gui.add(text, 'explode');
 		var controllers={
 			tableH:gui.add(data.table, "y", 0.1,0.9),
-			overhang:gui.add(data.toast, "h", 0.01,0.05).step(0.01)
+			overhang:gui.add(data.toast, "h", 0.01,0.05).step(0.01),
+			friction:gui.add(data.toast, "us", 0.1,0.6).step(0.1)
 		}
 		controllers["tableH"].onChange(function(value) {
 		  // Fires on every change, drag, keypress, etc.
@@ -258,6 +264,11 @@
 		  // Fires when a controller loses focus.
 		  update();
 		});
+
+		controllers["friction"].onFinishChange(function(value) {
+		  // Fires when a controller loses focus.
+		  update();
+		});		
 
 	</script>
 </body>
