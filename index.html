@@ -12,20 +12,29 @@
 	<div id="toast"></div>
 	<script>
 
+		var sin=Math.sin,
+			cos=Math.cos,
+			RAD2DEG=180/Math.PI;
+
 		var data={
 				table:{
 					x:0,
-					y:0.76,
+					y:0.74, //table height m
 					w:0.6,
 					h:0.03
 				},
 				physics:{
-					g:9.81
+					g:9.81, // gravity acceleration
+					dt:0.01 //sampling time s
 				},
 				toast: {
+					a: 0.11, //bread dimension m
+					m: 10.0, //bread weight gr
 					l:0.11,
 					h:0.02,
-					us:0.2
+					r: 0.01, //initial hoverang m
+					us:0.2,
+					f:0.2 //friction
 				},
 				positions:[],
 				end:{
@@ -83,6 +92,142 @@
 			})
 		}
 		calculateAllPositions();
+
+		function calculateStatuses() {
+			data.statuses=[];
+
+			var counter = 0;
+
+			var t = 0,
+				Fp = 0, //perpendicular force
+				Ff = 0, //friction force
+				JC, //moment of inertia
+				vr = 0,
+				ar = 0,
+				Om = 0,
+				aphi = 0,
+				r = data.toast.r,
+				m = data.toast.m,
+				a = data.toast.a,
+				f = data.toast.f,
+				g = data.physics.g,
+				dt = data.physics.dt,
+				h = data.table.y;
+
+			var xC=0,
+				yC=0,
+				phi=0; //bread angle rad
+
+			JC = m*a*a/3;
+			Fp = m*JC/(JC+m*r*r)*(g*cos(phi)-2*vr*Om);
+
+			//console.log(JC,Fp);
+
+			data.statuses.push({
+				t:t,
+				x:xC,
+				y:data.table.y-yC,
+				rad:phi,
+				deg:phi*RAD2DEG,
+				p:counter++
+			});
+			
+			while (Fp>0) {  // table loop
+
+				Fp = m*JC/(JC+m*r*r)*(g*cos(phi)-2*vr*Om);
+				Ff = f*Fp;
+
+				aphi= (r/JC)*Fp;
+				ar = -Ff/m + r*Om*Om + g*sin(phi);
+				if (ar<0) ar = 0;
+
+				Om = Om + aphi*dt;
+				vr = vr + ar*dt;
+
+				r = r + vr*dt;
+				phi = phi + Om*dt;
+				xC = r*cos(phi); 
+				yC = r*sin(phi);
+
+				t = t + dt;
+
+				data.statuses.push({
+					t:t,
+					x:xC,
+					y:data.table.y-yC,
+					rad:phi,
+					deg:phi*RAD2DEG,
+					p:counter
+				});
+
+				counter ++;
+
+			}  // end table loop
+			
+			//debug("Condition leaving the table");
+			
+			var vfx = vr*cos(phi),
+				vfy = vr*sin(phi);
+
+			while (yC < h) {//-a/2) {
+
+				vfy = vfy + g*dt;
+				xC = xC + vfx * dt;
+				yC = yC + vfy * dt;
+				phi = phi + Om*dt;
+
+				t = t + dt;
+
+				//debug();
+
+				data.statuses.push({
+					t:t,
+					x:xC,
+					y:data.table.y-yC,
+					rad:phi,
+					deg:phi*RAD2DEG,
+					p:counter
+				});
+
+				counter ++;
+
+			}
+
+			debug("Final conditions");
+
+			if (cos(phi) >0) {
+				console.log("BREAD SIDE");
+			} else {
+				console.log("BUTTER SIDE");
+			}
+
+			function debug(condition) {
+				console.log("####################################");
+				if(condition) {
+					console.log(condition);
+				}
+				console.log(
+						"N",counter,
+						"Fp",Fp,
+						"Ff",Ff,
+						"aphi",aphi,
+						"ar",ar,
+						"Om",Om,
+						"phi",phi,
+						"deg",phi*RAD2DEG,
+						"vr",vr,
+						"r",r,
+						"t",t,
+						"xC",xC,
+						"yC",yC
+					);
+				console.log("####################################");
+			}
+		}
+		calculateStatuses();
+
+		console.log(data.positions)
+		console.log(data.statuses)
 
 		var WIDTH=500,
 			HEIGHT=500;
@@ -154,7 +299,8 @@
 					.append("text")
 						.attr("x",0)
 						.attr("y",0)
-						.html(d3.round(data.end.thetaDeg,3)+"&deg;")
+						//.html(d3.round(data.end.thetaDeg,3)+"&deg;")
+						.html(d3.round(data.statuses[data.statuses.length-1].deg,3)+"&deg;")
 
 		update();
 
@@ -181,8 +327,14 @@
 	    	data.end=calculateTimeAngle();
 	    	calculateAllPositions();
 
+	    	data.end=data.statuses[data.statuses.length-1].deg;
+	    	calculateStatuses();
+
 	    	var toasts=toast.selectAll("g.toast")
-						.data(data.positions,function(d,i){
+						//.data(data.positions,function(d,i){
+						.data(data.statuses.filter(function(d){
+							return d.y>0;
+						}),function(d,i){
 							return "p"+d.p;
 						});
 
@@ -195,48 +347,100 @@
 										return d.p+": "+d.y+","+d.deg;
 									})
 									.attr("transform",function(d,i){
-										var x=xscale(data.table.w+data.toast.h),
-											y=yscale(d.y),
+										var x=xscale(data.table.w+data.toast.r+d.x),
+											y=yscale(d.y)-xscale(0.01/2),
 											dy=0;//y-yscale(data.table.y);
 
 
 
 										return "translate("+(x+dy)+","+y+")"
-									});
+									})
+									.on("mouseover",function(){
+										var sel = d3.select(this);
+										sel.moveToFront();
+									})
 							
 
 			toasts.exit().remove();
 
-			new_toasts.append("rect")
-					.attr("x",-xscale(data.toast.l/2))
-					.attr("y",-xscale(0.01/2))
-					.attr("width",xscale(data.toast.l))
-					.attr("height",xscale(0.01))
+			new_toasts.append("line")
+					.attr("class","x dropline")
+					.attr("x1",0)
+					.attr("x2",function(d){
+						var w=xscale(1)-xscale(data.table.w+data.toast.r+d.x);
+						return w;
+					})
+					.attr("y1",0)
+					.attr("y2",0)
 
 			new_toasts.append("line")
+					.attr("class","y dropline")
+					.attr("x1",0)
+					.attr("x2",0)
+					.attr("y1",0)
+					.attr("y2",function(d){
+						var h=-(yscale(d.y)-yscale(1)-xscale(0.01/2));
+						return h;
+					})
+
+			var g=new_toasts.append("g")
+
+			g.append("rect")
+					.attr("x",-xscale(data.toast.a/2))
+					.attr("y",-xscale(0.01/2))
+					.attr("width",xscale(data.toast.a))
+					.attr("height",xscale(0.01))
+
+			g.append("line")
 					.attr("class","butter")
-					.attr("x1",-xscale(data.toast.l/2))
+					.attr("x1",-xscale(data.toast.a/2))
 					.attr("y1",-xscale(0.01/2))
-					.attr("x2",xscale(data.toast.l/2))
+					.attr("x2",xscale(data.toast.a/2))
 					.attr("y2",-xscale(0.01/2))
 
-			new_toasts.append("circle")
+
+			g.append("circle")
 					.attr("cx",0)
 					.attr("cy",0)
 					.attr("r",1)
+
+			toasts.select("rect")
+					.attr("x",-xscale(data.toast.a/2))
+					.attr("width",xscale(data.toast.a))
+
+			toasts.select("line.butter")
+					.attr("class","butter")
+					.attr("x1",-xscale(data.toast.a/2))
+					.attr("x2",xscale(data.toast.a/2))
+
+			toasts.select("line.x.dropline")
+					.attr("x2",function(d){
+						var w=xscale(1)-xscale(data.table.w+data.toast.r+d.x);
+						return w;
+					})
+
+			toasts.select("line.y.dropline")
+					.attr("y2",function(d){
+						var h=-(yscale(d.y)-yscale(1)-xscale(0.01/2));
+						return h;
+					})
 
 			toasts
 				.transition()
 				.duration(1000)
 				.attr("transform",function(d,i){
-					var x=xscale(data.table.w+data.toast.h),
-						y=yscale(d.y),
+					var x=xscale(data.table.w+data.toast.r+d.x),
+						y=yscale(d.y)-xscale(0.01/2),
 						dy=0;//y-yscale(data.table.y);
 
 
 
-					return "translate("+(x+dy)+","+y+")rotate("+d.deg+")"
-				});
+					return "translate("+(x+dy)+","+y+")";
+				})
+				.select("g")
+					.attr("transform",function(d){
+						return "rotate("+d.deg+")";
+					})
 
 			table
 				.transition()
@@ -250,7 +454,17 @@
 					return "translate("+x+","+y+")";
 				});
 
-			angle.html(d3.round(data.end.thetaDeg,3)+"&deg;")
+			angle.html(d3.round(data.end,3)+"&deg;")
+
+			world.select("g.angle")
+				.attr("transform",function(){
+					var d=toasts.data()[toasts.data().length-1];
+					var x=xscale(data.table.x+data.table.w)+d.x,
+						y=yscale(d.y);
+					return "translate("+x+","+y+")"
+				})
+				.select("text")
+					.html(d3.round(data.statuses[data.statuses.length-1].deg,3)+"&deg;")
 
 	    }
 
@@ -261,17 +475,22 @@
 		//gui.add(text, 'explode');
 		var controllers={
 			tableH:gui.add(data.table, "y", 0.1,0.9),
-			overhang:gui.add(data.toast, "h", 0.01,0.05).step(0.01),
-			friction:gui.add(data.toast, "us", 0.1,0.6).step(0.1)
+			bread_size:gui.add(data.toast, "a", 0.1,0.2).step(0.01),
+			overhang:gui.add(data.toast, "r", 0.01,0.05).step(0.01),
+			friction:gui.add(data.toast, "f", 0.1,0.6).step(0.1),
+			dt:gui.add(data.physics, "dt", 0.01,0.1).step(0.01)
 		}
-		controllers["tableH"].onChange(function(value) {
-		  // Fires on every change, drag, keypress, etc.
-		});
+		
 
 		controllers["tableH"].onFinishChange(function(value) {
 		  // Fires when a controller loses focus.
 		  update();
 		});
+
+		controllers["bread_size"].onFinishChange(function(value) {
+		  // Fires when a controller loses focus.
+		  update();
+		});	
 
 		controllers["overhang"].onFinishChange(function(value) {
 		  // Fires when a controller loses focus.
@@ -281,8 +500,18 @@
 		controllers["friction"].onFinishChange(function(value) {
 		  // Fires when a controller loses focus.
 		  update();
+		});
+
+		controllers["dt"].onFinishChange(function(value) {
+		  // Fires when a controller loses focus.
+		  update();
 		});		
 
+		d3.selection.prototype.moveToFront = function() {
+		  return this.each(function(){
+		    this.parentNode.appendChild(this);
+		  });
+		};
 	</script>
 </body>
 </html>

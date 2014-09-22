@@ -59,3 +59,20 @@ body {
 	fill:none;
 	
 }
+#toast g line.dropline {
+	stroke:#333;
+	stroke-width:1;
+	fill:none;
+	shape-rendering: crispEdges;
+	display: none;
+}
+#toast g.toast:hover line.dropline {
+	display: block;
+}
+#toast g.toast:hover rect {
+	fill: gold;
+	fill-opacity:1;
+}
+#toast g.toast:hover line.butter {
+	stroke: #000;
+}
