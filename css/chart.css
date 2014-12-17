@@ -1,0 +1,42 @@
+.chart svg {
+	border:1px solid #ddd;
+}
+.chart .series path {
+	fill:none;
+	stroke:#aaa;
+	stroke-width:1px;
+}
+.chart .series path.bg {
+	stroke:#aaa;
+	stroke-width:8px;
+	stroke-opacity:0;
+}
+
+.chart .series .point circle {
+	fill-opacity:0;
+	fill:#666;
+} 
+.chart .series .point circle.bg {
+	fill-opacity:0;
+}
+.chart .series .point:hover circle {
+	fill-opacity:1;
+}
+.chart .series .point:hover circle.bg {
+	fill-opacity:0.2;
+}
+
+.chart .axis path,
+.chart .axis line {
+	shape-rendering:crispEdges;
+	fill:none;
+	stroke:#ddd;
+}
+
+.chart .axis .tick line {
+	stroke:#ddd;
+}
+.chart .axis .tick text{
+	font-size: 10px;
+	fill:#aaa;
+}

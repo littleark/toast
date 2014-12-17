@@ -32,10 +32,12 @@
 					dt:0.01 //sampling time s
 				},
 				toast: {
-					a: 0.2, //bread dimension m (area=a*a)
+					a: 0.11, //bread dimension m
 					m: 10.0, //bread weight gr
-					h: 0.014, // thickness of the toast m
+					l:0.11, //toast size square area = l*l m
+					h:0.02, // thickness of the toast m
 					r: 0.01, //initial hoverang m
+					//us:0.2,
 					f:0.5 //dynamic friction coefficient
 				},
 				positions:[],
@@ -44,10 +46,59 @@
 				}
 			};
 
+		/*
+		function calculateTimeAngle(h) {
 
+			var h=(typeof h!='undefined')?h:data.table.y;
+
+			var tgTheta=data.toast.us/(1+36*(data.toast.h*data.toast.h/(data.toast.l*data.toast.l))),
+				atanTheta=Math.atan(tgTheta),
+				dThetadt=Math.sqrt(2*data.physics.g*atanTheta/(data.toast.h*(1+data.toast.l*data.toast.l/(12*data.toast.h*data.toast.h)))),
+				dT=Math.sqrt(2*h/data.physics.g),
+				thetaRad=dThetadt*dT,
+				thetaDeg=thetaRad*180/Math.PI;
+
+			return {
+				dT:dT,
+				thetaRad:thetaRad,
+				thetaDeg:thetaDeg
+			}
+
+		};
+		*/
+
+		//data.end=calculateTimeAngle();
 
 		console.log(data)
-		
+		/*
+		function calculateAllPositions() {
+			data.positions=[];
+			for(var t=0;t<data.end.dT;t+=0.01) {
+				var y=1/2*data.physics.g*(t*t);
+				//console.log(y)
+				var current=calculateTimeAngle(y);
+				//console.log(t,data.table.y-y,current.thetaDeg)
+
+				data.positions.push({
+					t:t,
+					y:data.table.y-y,
+					rad:current.thetaRad,
+					deg:current.thetaDeg,
+					p:data.positions.length
+				})
+
+			}
+
+			data.positions.push({
+				t:data.end.dT,
+				y:0,
+				rad:data.end.thetaRad,
+				deg:data.end.thetaDeg,
+				p:data.positions.length
+			})
+		}
+		*/
+		//calculateAllPositions();
 
 		function calculateStatuses(options) {
 			if(options) {
@@ -83,27 +134,15 @@
 
 			//console.log(JC,Fp);
 
-			statuses.push({
+			/*statuses.push({
 				t:t,
-				x:r,
-				y:h-yC,
+				x:xC,
+				y:data.table.y-yC,
 				rad:phi,
 				deg:phi*RAD2DEG,
-				p:++counter,
-				table:1
-			});
-			//r=0;
-			if(r===0) {
-				debug("Toast not leaving the table "+h+"m");
-				if(!options) {
-					data.statuses=statuses;
-				} else {
-					console.log("############ END SIMULATION #############");
-					options.statuses=statuses;
-				}
-				return;
-			}
-
+				p:counter++
+			});*/
+			
 			while (Fp>0) {  // table loop
 
 				Fp = m*JC/(JC+m*r*r)*(g*cos(phi)-2*vr*Om);
@@ -129,11 +168,10 @@
 					y:h-yC,
 					rad:phi,
 					deg:phi*RAD2DEG,
-					p:counter,
-					table:1
+					p:counter
 				});
 
-				counter++;
+				counter ++;
 
 			}  // end table loop
 			
@@ -153,17 +191,16 @@
 				t = t + dt;
 
 				//debug();
-				
+
 				statuses.push({
 					t:t,
 					x:xC,
 					y:h-yC,
 					rad:phi,
 					deg:phi*RAD2DEG,
-					p:counter,
-					table:0
+					p:counter
 				});
-				
+
 				counter ++;
 
 			}
@@ -181,7 +218,7 @@
 			if(!options) {
 				data.statuses=statuses;
 			} else {
-				console.log("############ END SIMULATION ############# statuses",statuses.length);
+				console.log("############ END SIMULATION #############");
 				options.statuses=statuses;
 			}
 
@@ -231,8 +268,7 @@
 					.attr("height",HEIGHT);
 
 		var xscale=d3.scale.linear().domain([0,1]).range([0,WIDTH-(margins.left+margins.right)]),
-			yscale=d3.scale.linear().domain([0,1]).range([HEIGHT-(margins.top+margins.bottom),0]),
-			hscale=d3.scale.linear().domain([0,1]).range([0,HEIGHT-(margins.top+margins.bottom)])
+			yscale=d3.scale.linear().domain([0,1]).range([HEIGHT-(margins.top+margins.bottom),0]);
 
 		
 		
@@ -253,7 +289,7 @@
 				.attr("x",0)
 				.attr("y",0)
 				.attr("width",xscale(data.table.w))
-				.attr("height",hscale(data.table.h));
+				.attr("height",xscale(data.table.h));
 
 		table.append("line")
 				.attr("class","dropline")
@@ -316,15 +352,12 @@
 	    	//data.end=calculateTimeAngle();
 	    	//calculateAllPositions();
 
-	    	calculateStatuses();
 	    	data.end=data.statuses[data.statuses.length-1].deg;
-			
-			console.log("UPDATE DATA:",data)	    	
+	    	calculateStatuses();
 
 	    	var toasts=toast.selectAll("g.toast")
 						//.data(data.positions,function(d,i){
 						.data(data.statuses.filter(function(d,i){
-							return 1;
 							return d.y>0;
 						}),function(d,i){
 							return "p"+d.p;
@@ -339,13 +372,13 @@
 										return d.p+": "+d.y+","+d.deg;
 									})
 									.attr("transform",function(d,i){
-										var x=xscale(data.table.w+d.x),
-											y=yscale(d.y);//-hscale(data.toast.h/2),
-											//dy=0;//y-yscale(data.table.y);
+										var x=xscale(data.table.w+data.toast.r+d.x),
+											y=yscale(d.y)-xscale(0.01/2),
+											dy=0;//y-yscale(data.table.y);
 
 
 
-										return "translate("+(x)+","+y+")"
+										return "translate("+(x+dy)+","+y+")"
 									})
 									.on("mouseover",function(){
 										var sel = d3.select(this);
@@ -359,7 +392,7 @@
 					.attr("class","x dropline")
 					.attr("x1",0)
 					.attr("x2",function(d){
-						var w=xscale(1)-xscale(data.table.w+d.x);
+						var w=xscale(1)-xscale(data.table.w+data.toast.r+d.x);
 						return w;
 					})
 					.attr("y1",0)
@@ -371,7 +404,7 @@
 					.attr("x2",0)
 					.attr("y1",0)
 					.attr("y2",function(d){
-						var h=-(yscale(d.y));//-yscale(1)-hscale(data.toast.h/2));
+						var h=-(yscale(d.y)-yscale(1)-xscale(0.01/2));
 						return h;
 					})
 
@@ -379,32 +412,22 @@
 
 			g.append("rect")
 					.attr("x",-xscale(data.toast.a/2))
-					.attr("y",-hscale(data.toast.h))
-					.attr("width",hscale(data.toast.a))
-					.attr("height",hscale(data.toast.h))
+					.attr("y",-xscale(0.01/2))
+					.attr("width",xscale(data.toast.a))
+					.attr("height",xscale(0.01))
 
 			g.append("line")
 					.attr("class","butter")
 					.attr("x1",-xscale(data.toast.a/2))
-					.attr("y1",-hscale(data.toast.h))
+					.attr("y1",-xscale(0.01/2))
 					.attr("x2",xscale(data.toast.a/2))
-					.attr("y2",-hscale(data.toast.h))
+					.attr("y2",-xscale(0.01/2))
 
 
 			g.append("circle")
 					.attr("cx",0)
 					.attr("cy",0)
 					.attr("r",1)
-
-			g.append("circle")
-					.attr("class","center")
-					.attr("cx",function(d){
-						var x=xscale(d.x)
-						return -x;
-					})
-					.attr("cy",0)
-					.attr("r",1)
-					.style("fill","#ff6600")
 
 			toasts.select("rect")
 					.attr("x",-xscale(data.toast.a/2))
@@ -423,7 +446,7 @@
 
 			toasts.select("line.y.dropline")
 					.attr("y2",function(d){
-						var h=-(yscale(d.y));
+						var h=-(yscale(d.y)-yscale(1)-xscale(0.01/2));
 						return h;
 					})
 
@@ -431,37 +454,18 @@
 				.transition()
 				.duration(1000)
 				.attr("transform",function(d,i){
-					var x=xscale(data.table.w+d.x),
-						y=yscale(d.y);//-hscale(data.toast.h/2);
-					//y=yscale(data.table.y);
+					var x=xscale(data.table.w+data.toast.r+d.x),
+						y=yscale(d.y)-xscale(0.01/2),
+						dy=0;//y-yscale(data.table.y);
 
-					return "translate("+x+","+y+")";
+
+
+					return "translate("+(x+dy)+","+y+")";
 				})
 				.select("g")
 					.attr("transform",function(d){
-						if(d.table) {
-							
-							var dx=xscale(d.x),
-								dy=yscale.range()[0] - yscale(data.table.y-d.y)
-							
-							console.log("----> X",d.x,dx)
-							console.log("----> Y",data.table.y,d.y,data.table.y-d.y,dy)
-							//console.log("---------->",d.x,d.y,data.table.y,dx,dy)
-							dx=dy=0;
-							return "rotate("+d.deg+","+(dx)+","+(-dy)+")";	
-						}
-						return "rotate("+d.deg+")";	
-						
+						return "rotate("+d.deg+")";
 					})
-			toasts
-				.select("circle.center")
-					.attr("cx",function(d){
-						//return -(xscale(data.toast.r));
-						var dx=d.x/Math.cos(d.rad);
-						console.log("DEG ",d.deg,"DX",dx,"->",xscale(dx))
-						return -(xscale(dx));
-					})
-					
 
 			table
 				.transition()
@@ -487,82 +491,41 @@
 				.select("text")
 					.html(d3.round(data.statuses[data.statuses.length-1].deg,3)+"&deg;");
 
-			
+			var simulation={
+				table: {
+					y:10
+				},
+				physics:{
+					dt:0.001 //sampling time s
+				},
+				toast:{
+					//f:0.5,
+					//r:0.02
+				}
+			}
+			calculateStatuses(simulation);
+
+			console.log(simulation)
+
+			new Chart([
+					{
+						name:"ahhh",
+						data:simulation.statuses.map(function(d){
+							return {
+								x: -d.y+(simulation.table.y),
+								y: Math.cos(d.rad)
+							}
+						})
+					}
+				],{
+					container:"#angle_vs_y",
+					width:760,
+					height:300,
+					invertedAxis:false
+					//interpolate:"monotone"
+				});
 
 	    }
-
-	    var simulation={
-			table: {
-				y:10
-			},
-			physics:{
-				dt:0.001 //sampling time s
-			},
-			toast:{
-				
-			}
-		}
-		calculateStatuses(simulation);
-
-		console.log(simulation)
-
-		var PHIvsYChart=new Chart([
-				{
-					name:"line1",
-					data:simulation.statuses.map(function(d){
-						return {
-							x: -d.y+(simulation.table.y),
-							y: Math.cos(d.rad)
-						}
-					})
-				}
-			],{
-				container:"#angle_vs_y",
-				width:760,
-				height:300,
-				invertedAxis:false
-				//interpolate:"monotone"
-			});
-
-		function simulate(options) {
-		
-			simulation.toast.r=data.toast.r;
-			if(options && options.toast && options.toast.r) {
-				simulation.toast.r = options.toast.r;
-			}
-
-			simulation.toast.m=data.toast.m;
-			if(options && options.toast && options.toast.m) {
-				simulation.toast.m = options.toast.m;
-			}
-
-			simulation.toast.a=data.toast.a;
-			if(options && options.toast && options.toast.a) {
-				simulation.toast.a = options.toast.a;
-			}
-
-			simulation.toast.f=data.toast.f;
-			if(options && options.toast && options.toast.f) {
-				simulation.toast.f = options.toast.f;
-			}
-
-			//simulation.table.y=2;
-			calculateStatuses(simulation);
-			console.log("SHITEEEEEEEEEEEEEEEEE")
-			console.log(simulation)
-			PHIvsYChart.update([
-				{
-					name:"line1",
-					data:simulation.statuses.map(function(d){
-						return {
-							x: -d.y+(simulation.table.y),
-							y: Math.cos(d.rad)
-						}
-					})
-				}
-			])
-		}
-		
 
 	    var gui = new dat.GUI();
 		//gui.add(text, 'message');
@@ -574,7 +537,6 @@
 			bread_size:gui.add(data.toast, "a", 0.1,0.2).step(0.01),
 			overhang:gui.add(data.toast, "r", 0.0,0.05).step(0.01),
 			friction:gui.add(data.toast, "f", 0.1,0.6).step(0.1),
-			bread_weight:gui.add(data.toast, "m", 2,20).step(1),
 			dt:gui.add(data.physics, "dt", 0.01,0.1).step(0.01)
 		}
 		
@@ -587,25 +549,16 @@
 		controllers["bread_size"].onFinishChange(function(value) {
 		  // Fires when a controller loses focus.
 		  update();
-		  simulate();
-		});
-
-		controllers["bread_weight"].onFinishChange(function(value) {
-		  // Fires when a controller loses focus.
-		  update();
-		  simulate();
 		});	
 
 		controllers["overhang"].onFinishChange(function(value) {
 		  // Fires when a controller loses focus.
 		  update();
-		  simulate();
 		});
 
 		controllers["friction"].onFinishChange(function(value) {
 		  // Fires when a controller loses focus.
 		  update();
-		  simulate();
 		});
 
 		controllers["dt"].onFinishChange(function(value) {
