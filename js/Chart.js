@@ -97,12 +97,25 @@ function Chart(data,options) {
 			.attr("class","bg")
 			.attr("d",function(d){
 				return line(d.data)
-			});
+			})
+
 
 	series.append("path")
 			.attr("d",function(d){
 				console.log("PAAAAATHHHH",d)
 				return line(d.data)
+			})
+			.style("stroke",function(d){
+				if(d.stroke) {
+					return d.stroke;
+				}
+				return null;
+			})
+			.style("stroke-width",function(d){
+				if(d.strokeWidth) {
+					return d.strokeWidth;
+				}
+				return null;
 			})
 	
 	/*
@@ -238,9 +251,20 @@ function Chart(data,options) {
 
 	var xaxis=grid.append("g")
 			    .attr("class", "x axis")
-			    .attr("transform", "translate(0," + (yscale.range()[0]/2) + ")")
+			    .attr("transform", "translate(0," + (yscale.range()[0]) + ")")
 
 	xaxis.call(xAxis)
+
+	if(options.showZeroAxis) {
+		var zero=grid.append("g")
+			    .attr("class", "axis")
+			    .attr("transform", "translate(0," + (yscale.range()[0]/2) + ")")		
+		zero.append("line")
+				.attr("x1",0)
+				.attr("y1",0)
+				.attr("x2",xscale.range()[1])
+				.attr("y2",0)
+	}
 
 	var yAxis = d3.svg.axis()
 					    .scale(yscale)
@@ -274,18 +298,45 @@ function Chart(data,options) {
 		xscale.domain(x_extent).nice();
 		yscale.domain(y_extent).nice();
 
-		series=series.data(data,function(d){
+		var old_series=series.data().map(function(s){
+			return {
+				name:s.name,
+				last:s.data[s.data.length-1],
+				l:s.data.length,
+				data:s.data
+			}
+		})
+
+		series=series.data(data.map(function(d,i){
+				
+				console.log("SERIEEEE",i,d)
+				d.old=old_series.filter(function(s){
+					return s.name==d.name;
+				})[0];
+				return d;
+			}),function(d){
 					return d.name;
 			});
 
 		console.log(series.data())
 
 		series.select("path.bg")
-				.attr("d",function(d){
-					console.log("!!!!!!!!!!!!!",d)
+				.attr("d",function(d,i){
+					//console.log("!!!!!!!!!!!!!",d)
 					return line(d.data)
 				});
+
 		series.select("path:not(.bg)")
+				.attr("d",function(d){
+					if(d.data.length > d.old.l) {
+						var tmp=d3.range(d.data.length - d.old.l).map(function(p){
+							return d.old.data[d.old.l-1];
+						})
+						console.log("***************",tmp)
+						return line(d.old.data.concat(tmp))	
+					}
+					return line(d.old.data)
+				})
 				.transition()
 				.duration(1000)
 				.attr("d",function(d){
@@ -296,7 +347,7 @@ function Chart(data,options) {
 		points=series.selectAll("g.point")
 					.data(function(d){
 						console.log("---------------->",d);
-						return d.data;
+						return d.data
 					});
 		
 		points.exit().remove();
@@ -336,7 +387,15 @@ function Chart(data,options) {
 				return "translate("+x+","+(y)+")"
 			})
 
-		xaxis.call(xAxis);
+		yaxis
+			.transition()
+			.duration(1000)
+			.call(yAxis);
+
+		xaxis
+			.transition()
+			.duration(1000)
+			.call(xAxis);
 
 	}	
 
