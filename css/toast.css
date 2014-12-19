@@ -1,14 +1,59 @@
 body {
-  background: #fff;  
+  	background-color: #f6f6f6;
 }
-
+h1,h2,h3,h4,h5 {
+	/*font-family: 'Roboto Slab', serif;*/
+	font-family: 'Rozha One', serif;
+	letter-spacing: 0.05em;
+	font-weight: 700;
+}
+h4 {
+	font-weight: 300;
+}
+#fold {
+	background-color:#fff;
+	position: relative;
+	border-bottom:1px solid #333;
+}
+#fold h1 {
+	text-align: center;
+}
+#toast {
+	line-height: 0;
+	margin-left: -15px;
+}
 #toast svg {
 	
+
 	font-family: sans-serif;
+
+	-webkit-transition: height 1000ms linear;
+	-moz-transition: height 1000ms linear;
+	-ms-transition: height 1000ms linear;
+	-o-transition: height 1000ms linear;
+	transition: height 1000ms linear;
+
+	
+}
+#toast svg g#bigToast rect.bread {
+	stroke:#E5A244;
+	stroke-width:3;
+	fill:#E4C072;
+	fill:url(#toastGradient);
+}
+#toast svg g#bigToast rect.butter {
+	stroke:none;
+	fill:#fff;
+	fill-opacity:0.4;
+}
+#toast svg g#bigToast line {
+	stroke:#aaa;
+	stroke-width:2;
+	stroke-dasharray: 2 2;
 }
 #toast svg g#table rect {
-	stroke:#999;
-	fill:#ddd;
+	stroke:#B09146;
+	fill:#E6C26D;
 	stroke-width:1;
 	shape-rendering: crispEdges;
 }
@@ -25,7 +70,9 @@ body {
 	fill:#555;
 	font-size:12px;
 }
-
+#toast #axes .axis {
+	display: none;
+}
 #toast #axes .axis path {
 	stroke:#999;
 	stroke-width:1;
@@ -43,38 +90,59 @@ body {
 	fill:#aaa;
 }
 
-#toast g circle {
+#toast .toast circle {
 	fill:#333;
-	fill-opacity:0.8;
+	fill-opacity:1;
 	stroke:none;
 }
-#toast g rect {
-	fill:#333;
-	fill-opacity:0.2;
+#toast .toast rect {
+	fill:#E5A244;
+	fill-opacity:0;
 	stroke:none;
 }
-#toast g line.butter {
-	stroke:#ff6600;
+#toast .toast .ix rect {
+	fill-opacity:0 !important;
+}
+#toast .toast path.arrow {
+	fill-opacity:0;
+	fill:#a0091d;
+	stroke:none;
+}
+#toast .toast.safe path.arrow {
+	fill:#339933;
+}
+#toast .toast.visible path.arrow,
+#toast .toast:hover path.arrow {
+	fill-opacity:0.7;
+}
+#toast .toast.visible rect {
+	fill-opacity:1;
+}
+#toast .toast line.butter {
+	stroke:#333;
 	stroke-width:1;
-	stroke-opacity:0.5;
+	stroke-opacity:0.05;
 	fill:none;
 	
 }
-#toast g line.dropline {
+#toast .toast line.dropline {
 	stroke:#333;
 	stroke-width:1;
 	fill:none;
 	shape-rendering: crispEdges;
 	display: none;
 }
-#toast g.toast:hover line.dropline {
+#toast .toast:hover line.dropline {
 	display: block;
 }
-#toast g.toast:hover rect {
-	fill: gold;
+#toast .toast:hover rect {
 	fill-opacity:1;
 }
-#toast g.toast:hover line.butter {
-	stroke: #ff0000;
-	
+#toast .toast:hover line.butter {
+	fill-opacity:1;
+}
+#toast .toast:hover line.butter,
+#toast .toast.visible line.butter {
+	stroke: #000;
+	stroke-opacity:1;
 }

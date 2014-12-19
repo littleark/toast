@@ -6,18 +6,20 @@ d3.selection.prototype.moveToFront = function() {
 
 function Chart(data,options) {
 
-	console.log("Chart",data,options)
+	//console.log("Chart",data,options)
 
 	var container=d3.select(options.container);
 
-	var WIDTH=options.width || 300,
-		HEIGHT=options.height || 200;
+
+
+	var WIDTH= options.width || (container.node().clientWidth || 300),
+		HEIGHT=options.height || (WIDTH/(16/9) || 200);
 
 	var margins={
 		top:10,
-		bottom:50,
-		left:options.align=="left"?100:50,
-		right:options.align=="left"?50:100
+		bottom:25,
+		left:40,
+		right:20
 	}
 
 	var padding={
@@ -34,7 +36,7 @@ function Chart(data,options) {
 		return d.y;
 	});
 
-	console.log("EXTENTS",x_extent,y_extent)
+	//console.log("EXTENTS",x_extent,y_extent)
 
 	var xscale=d3.scale.linear().domain(x_extent).range([padding.left,WIDTH-(margins.left+margins.right+padding.left+padding.right)]).nice(),
 		yscale=d3.scale.linear().domain(y_extent).range([HEIGHT-(margins.bottom+margins.top+padding.top+padding.bottom),padding.bottom]).nice();
@@ -102,7 +104,7 @@ function Chart(data,options) {
 
 	series.append("path")
 			.attr("d",function(d){
-				console.log("PAAAAATHHHH",d)
+				//console.log("PAAAAATHHHH",d)
 				return line(d.data)
 			})
 			.style("stroke",function(d){
@@ -134,16 +136,16 @@ function Chart(data,options) {
 				d.y=y;
 
 				if(prev) {
-					console.log(d.key,prev-10,"<"+y+"<",prev+10)
+					//console.log(d.key,prev-10,"<"+y+"<",prev+10)
 					
 					if(options.invertedAxis) {
 						if(y<prev+10) {
-							//console.log("mod",d.key,y+10);
+							////console.log("mod",d.key,y+10);
 							y=prev+10;
 						}	
 					} else {
 						if(y<prev+10) {
-							//console.log("mod",d.key,y+10);
+							////console.log("mod",d.key,y+10);
 							y=prev+10;
 						}
 					}
@@ -180,7 +182,7 @@ function Chart(data,options) {
 	if(!options.left) {
 		series
 				.filter(function(d){
-					console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",d.value.length,xscale.domain()[1])
+					//console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",d.value.length,xscale.domain()[1])
 					return d.value.length!=xscale.domain()[1]+1;
 				})
 				.append("line")
@@ -212,7 +214,7 @@ function Chart(data,options) {
 
 	var points=series.selectAll("g.point")
 					.data(function(d){
-						console.log("---------------->",d);
+						//console.log("---------------->",d);
 						return d.data;
 					})
 					.enter()
@@ -221,7 +223,7 @@ function Chart(data,options) {
 						.attr("transform",function(d,i){
 							var x=xscale(d.x),
 								y=yscale(d.y);
-							//console.log(i,d,"=",y)
+							////console.log(i,d,"=",y)
 							return "translate("+x+","+(y)+")"
 						})
 
@@ -284,7 +286,7 @@ function Chart(data,options) {
 	yaxis.call(yAxis)
 
 	this.update=function(data) {
-		console.log("UPDATE DATA",data);
+		//console.log("UPDATE DATA",data);
 		
 		x_extent=d3.extent(data[0].data,function(d){
 			return d.x;
@@ -293,7 +295,7 @@ function Chart(data,options) {
 			return d.y;
 		});
 	
-		console.log("EXTENTS",x_extent,y_extent)
+		//console.log("EXTENTS",x_extent,y_extent)
 
 		xscale.domain(x_extent).nice();
 		yscale.domain(y_extent).nice();
@@ -309,7 +311,7 @@ function Chart(data,options) {
 
 		series=series.data(data.map(function(d,i){
 				
-				console.log("SERIEEEE",i,d)
+				//console.log("SERIEEEE",i,d)
 				d.old=old_series.filter(function(s){
 					return s.name==d.name;
 				})[0];
@@ -318,11 +320,11 @@ function Chart(data,options) {
 					return d.name;
 			});
 
-		console.log(series.data())
+		//console.log(series.data())
 
 		series.select("path.bg")
 				.attr("d",function(d,i){
-					//console.log("!!!!!!!!!!!!!",d)
+					////console.log("!!!!!!!!!!!!!",d)
 					return line(d.data)
 				});
 
@@ -332,7 +334,7 @@ function Chart(data,options) {
 						var tmp=d3.range(d.data.length - d.old.l).map(function(p){
 							return d.old.data[d.old.l-1];
 						})
-						console.log("***************",tmp)
+						//console.log("***************",tmp)
 						return line(d.old.data.concat(tmp))	
 					}
 					return line(d.old.data)
@@ -340,13 +342,13 @@ function Chart(data,options) {
 				.transition()
 				.duration(1000)
 				.attr("d",function(d){
-					console.log("!!!!!!!!!!!!!",d)
+					//console.log("!!!!!!!!!!!!!",d)
 					return line(d.data)
 				});
 		
 		points=series.selectAll("g.point")
 					.data(function(d){
-						console.log("---------------->",d);
+						//console.log("---------------->",d);
 						return d.data
 					});
 		
@@ -359,7 +361,7 @@ function Chart(data,options) {
 							.attr("transform",function(d,i){
 								var x=xscale(d.x),
 									y=yscale(d.y);
-								//console.log(i,d,"=",y)
+								////console.log(i,d,"=",y)
 								return "translate("+x+","+(y)+")"
 							})
 
@@ -383,7 +385,7 @@ function Chart(data,options) {
 		points.attr("transform",function(d,i){
 				var x=xscale(d.x),
 					y=yscale(d.y);
-				//console.log(i,d,"=",y)
+				////console.log(i,d,"=",y)
 				return "translate("+x+","+(y)+")"
 			})
 
@@ -431,9 +433,9 @@ function Tooltip(options) {
 			tm=null;
 		}
 
-		console.log(x,y,YEAR,day)
+		//console.log(x,y,YEAR,day)
 
-		console.log(options.distances[YEAR][day])
+		//console.log(options.distances[YEAR][day])
 
 		var teams=ul.selectAll("li")
 			.data(function(){
