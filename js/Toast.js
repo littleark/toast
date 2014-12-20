@@ -8,9 +8,9 @@
 		var data={
 				table:{
 					x:0,
-					y:0.76, //table height m
+					y:0.96, //table height m
 					w:0.6, //table width
-					h:0.03 //table thickness
+					h:0.05 //table thickness
 				},
 				physics:{
 					g:9.81, // gravity acceleration
@@ -34,7 +34,7 @@
 		//console.log(data)
 		
 
-		function calculateStatuses(options) {
+		function calculateStatuses(options,silent) {
 			if(options) {
 				//console.log("############ SIMULATION #############");
 			}
@@ -128,8 +128,14 @@
 			
 			var vfx = vr*cos(phi),
 				vfy = vr*sin(phi);
+			var beta=0;
 
-			while (yC < h-a/2) {
+			//while(((h-yC)/Math.sin(beta)-(data.toast.a/2))>0) {
+			while (yC <= h-data.toast.a/2) {
+
+				
+
+				
 
 				vfy = vfy + g*dt;
 				xC = xC + vfx * dt;
@@ -138,8 +144,38 @@
 
 				t = t + dt;
 
+				/*
+				if(phi>=0 && phi<Math.PI/2) {
+					if(!silent)
+						console.log("q1")
+					beta=phi;
+				}
+				if(phi>=Math.PI/2 && phi<Math.PI) {
+					if(!silent)
+						console.log("q2")
+					beta=Math.PI - phi;
+				}
+				if(phi>=Math.PI && phi<2*Math.PI*3/4) {
+					if(!silent)
+						console.log("q3")
+					beta=phi - Math.PI;
+				}
+				if(phi>=2*Math.PI*3/4 && phi<2*Math.PI*2) {
+					if(!silent)
+						console.log("q4")
+					beta=Math.PI*2 - phi;
+				}*/
+
 				//debug();
+
+				/*if (((h-yC)/Math.cos(beta))<(data.toast.a/2)) {
+					break;
+				}*/
+
 				
+				
+				//hi=phi%(Math.PI*2)
+
 				statuses.push({
 					t:t,
 					x:xC,
@@ -147,7 +183,8 @@
 					rad:phi,
 					deg:phi*RAD2DEG,
 					p:counter,
-					table:0
+					table:0,
+					beta:beta
 				});
 				
 				counter ++;
@@ -172,6 +209,9 @@
 			}
 
 			function debug(condition) {
+				if(silent) {
+					return;
+				}
 				console.log("####################################");
 				if(condition) {
 					console.log(condition);
@@ -189,7 +229,12 @@
 						"r",r+"",
 						"t",t+"",
 						"xC",xC+"",
-						"yC",yC+""
+						"yC",yC+""//,
+						//"beta",beta+"",
+						//"beta deg",(beta*RAD2DEG),
+						//"dist",(h-yC),
+						//"l",(h-yC)/Math.cos(beta),
+						//"touching?",((h-yC)/Math.cos(beta))<(data.toast.a/2)
 					);
 				console.log("####################################");
 			}
@@ -198,6 +243,10 @@
 
 		//console.log(data.positions)
 		//console.log(data.statuses)
+
+		var sentence=new Sentence({
+			sentence:"#sentence"
+		})
 
 		var margins={
 			top:0,
@@ -213,35 +262,98 @@
 
 		WIDTH=WIDTH*2;
 
+		var TABLE_STROKE=2;
+
 		var svg=d3.select("#toast")
 					.append("svg")
 					.attr("width",WIDTH)
 					.attr("height",HEIGHT+BIG_TOAST_HEIGHT);
 
-  		svg.append("defs")
-  				.append("radialGradient")
-  					.attr("id","toastGradient")
-  					.selectAll("stop")
-  						.data([
-  							{
-  								offset:"5%",
-  								stopColor:"#C79637"
-  								//stopColor:"#EDD79D"
-  							},
-  							{
-  								offset:"100%",
-  								stopColor:"#EDD79D"
-  								//stopColor:"#C79637"
-							}
-						])
-  						.enter()
-  						.append("stop")
-  							.attr("offset",function(d){
-  								return d.offset;
-  							})
-  							.attr("stop-color",function(d){
-  								return d.stopColor;
-  							})
+  		var defs=svg.append("defs")
+
+  		defs
+			.append("radialGradient")
+				.attr("id","toastGradient")
+				.selectAll("stop")
+					.data([
+						{
+							offset:"5%",
+							stopColor:"#C79637"
+							//stopColor:"#EDD79D"
+						},
+						{
+							offset:"100%",
+							stopColor:"#EDD79D"
+							//stopColor:"#C79637"
+					}
+				])
+					.enter()
+					.append("stop")
+						.attr("offset",function(d){
+							return d.offset;
+						})
+						.attr("stop-color",function(d){
+							return d.stopColor;
+						})
+
+		defs
+			.append("linearGradient")
+				.attr("id","tableBottomGradient")
+				.selectAll("stop")
+					.data([
+						{
+							offset:"95%",
+							stopColor:"#C9A533"
+							//stopColor:"#EDD79D"
+						},
+						{
+							offset:"100%",
+							stopColor:"#A27D2D"
+							//stopColor:"#C79637"
+					}
+				])
+					.enter()
+					.append("stop")
+						.attr("offset",function(d){
+							return d.offset;
+						})
+						.attr("stop-color",function(d){
+							return d.stopColor;
+						})
+
+		defs
+			.append("linearGradient")
+				.attr("id","tableShadowGradient")
+				.attr({
+					x1:"0",
+					x2:"0",
+					y1:"0",
+					y2:"1"
+				})
+				.selectAll("stop")
+					.data([
+						{
+							offset:"0%",
+							stopColor:"#000",
+							stopOpacity:0.3
+						},
+						{
+							offset:"100%",
+							stopColor:"#000",
+							stopOpacity:0.0
+					}
+				])
+					.enter()
+					.append("stop")
+						.attr("offset",function(d){
+							return d.offset;
+						})
+						.attr("stop-color",function(d){
+							return d.stopColor;
+						})
+						.attr("stop-opacity",function(d){
+							return d.stopOpacity;
+						})
 
 		var xscale=d3.scale.linear().domain([0,1*2]).range([0,WIDTH-(margins.left+margins.right)]),
 			yscale=d3.scale.linear().domain([0,data.table.y*FACTOR]).range([HEIGHT-(margins.top+margins.bottom)+BIG_TOAST_HEIGHT,BIG_TOAST_HEIGHT]),
@@ -258,7 +370,7 @@
 		bigToast.append("rect")
 					.attr("class","bread")
 					.attr("x",-xscale2(data.toast.a/2))
-					.attr("y",-xscale2(data.toast.a/2))
+					.attr("y",-(xscale2(data.toast.a/2)))
 					.attr("width",xscale2(data.toast.a))
 					.attr("height",xscale2(data.toast.a))
 					//.attr("fill","url(#toastGradient)")
@@ -274,16 +386,12 @@
 					.attr("ry",5)
 
 		bigToast.append("line")
-					.attr("x1",-xscale2(data.toast.a)/2)
-					.attr("y1",xscale2(data.toast.a)/2)
-					.attr("x2",-xscale(data.toast.a)/2)
-					.attr("y2",xscale(data.toast.a)/2+BIGTOAST_DIST)
+				.attr("class","left")
+					
 
 		bigToast.append("line")
-					.attr("x1",xscale2(data.toast.a)/2)
-					.attr("y1",xscale2(data.toast.a)/2)
-					.attr("x2",xscale(data.toast.a)/2)
-					.attr("y2",xscale(data.toast.a)/2+BIGTOAST_DIST)
+				.attr("class","right")
+					
 		
 		var world=svg.append("g")
 						.attr("id","world")
@@ -301,34 +409,54 @@
 		table.append("rect")
 				.attr("class","top")
 				.attr("x",0)
-				.attr("y",0)
+				.attr("y",TABLE_STROKE/2)
 				.attr("width",xscale(data.table.w))
-				.attr("height",hscale(data.table.h));
+				.attr("height",hscale(data.table.h)-TABLE_STROKE);
 
 		table.append("rect")
 				.attr("class","bottom")
 				.attr("x",0)
-				.attr("y",hscale(data.table.h))
+				.attr("y",hscale(data.table.h)-TABLE_STROKE/2)
 				.attr("width",xscale(data.table.w-0.1))
 				.attr("height",hscale(data.table.h*4));
 
 		table.append("rect")
 				.attr("class","leg")
 				.attr("x",xscale(data.table.w-0.05-0.05))
-				.attr("y",hscale(data.table.h))
+				.attr("y",hscale(data.table.h)-TABLE_STROKE/2)
 				.attr("width",xscale(0.05))
 				.attr("height",hscale(data.table.y - data.table.h));
 
+		table.append("rect")
+				.attr("class","shadow")
+				.attr("x",0)
+				.attr("y",hscale(data.table.h))
+				.attr("width",xscale(data.table.w-0.1))
+				.attr("height",hscale(0.03));
 
-		/*var floor=world.append("g")
+		function heightFormat(value) {
+			if(value>=1) {
+				return d3.round(value,2)+"m";
+			}
+			return d3.round(value*100,0)+"cm";
+		}
+
+		table.append("text")
+				.attr("class","info")
+				.attr("x",xscale(data.table.w-0.05-0.05)-15)
+				.attr("y",hscale(data.table.h*5+(data.table.y-data.table.h*5)/2))
+				.text(heightFormat(data.table.y))
+
+
+		var floor=world.append("g")
 					.attr("id","floor")
-					.attr("transform","translate(0,"+yscale.range()[0]+")")
+					.attr("transform","translate(0,"+(BIG_TOAST_HEIGHT+hscale(data.table.y))+")")
 					
 		floor.append("rect")
 			.attr("x",0)
 			.attr("y",0)
 			.attr("width",xscale.range()[1])
-			.attr("height",3)*/
+			.attr("height",3)
 
 		var ix=world.append("g")
 					.attr("id","ix");
@@ -414,7 +542,7 @@
 					.transition()
 					.duration(DURATION)	
 						//.attr("y",hscale(data.table.h))
-						.attr("height",hscale(data.table.y))
+						.attr("height",hscale(data.table.y - data.table.h))
 						.each("end",function(){
 							update();
 						})
@@ -423,15 +551,17 @@
 				.transition()
 				.duration(DURATION)
 					.call(yAxis);
-
-			/*floor
+			
+			floor
 				.transition()
 				.duration(DURATION)
-					.attr("transform","translate(0,"+yscale.range()[0]+")")
+					//.attr("transform","translate(0,"+yscale.range()[0]+")")
+					//.attr("transform","translate(0,"+hscale(data.table.y)+")")
+					.attr("transform","translate(0,"+(BIG_TOAST_HEIGHT+hscale(data.table.y))+")")
 					.each("end",function(){
 						update();
-					})*/
-
+					})
+			
 			
 
 	    }
@@ -443,6 +573,19 @@
 	    	calculateStatuses();
 	    	data.end=data.statuses[data.statuses.length-1].deg;
 			
+	    	sentence.setValue("#breadSize",(data.toast.a*100)+"cm");
+	    	sentence.setValue("#breadOut",((data.toast.r+data.toast.a/2)*100)+"cm");
+	    	sentence.setValue("#tableHeight",(data.table.y<1)?d3.round(data.table.y*100,0)+"cm":d3.round(data.table.y,2)+"m");
+	    	sentence.setValue("#breadAction",(data.statuses.length>1)?"fall":"not fall");
+
+			if(data.statuses.length<=1) {
+				sentence.hide("#landStatus");
+			} else {
+				sentence.show("#landStatus");
+			}
+			
+	    	sentence.setValue("#breadStatus",(cos(data.statuses[data.statuses.length-1].rad)>0)?"up":"down");
+
 			console.log("UPDATE DATA:",data)	    	
 
 	    	var toasts=toast.selectAll("g.toast")
@@ -460,6 +603,9 @@
 									})
 									.classed("visible",function(d,i){
 										return i===0 || i==data.statuses.length-1
+									})
+									.classed("last",function(d,i){
+										return i==data.statuses.length-1
 									})
 									.attr("rel",function(d){
 										////console.log("rel",d.p)
@@ -499,12 +645,14 @@
 					.attr("y",-hscale(data.toast.h))
 					.attr("width",hscale(data.toast.a))
 					.attr("height",hscale(data.toast.h))
+					.attr("rx",1)
+					.attr("ry",1)
 
 			g.append("line")
 					.attr("class","butter")
-					.attr("x1",-xscale(data.toast.a/2))
+					.attr("x1",-xscale(data.toast.a/2-0.005))
 					.attr("y1",-hscale(data.toast.h))
-					.attr("x2",xscale(data.toast.a/2))
+					.attr("x2",xscale(data.toast.a/2-0.005))
 					.attr("y2",-hscale(data.toast.h))
 
 			/*new_toasts.append("line")
@@ -526,28 +674,34 @@
 						var h=-(yscale(d.y));//-yscale(1)-hscale(data.toast.h/2));
 						return h;
 					})*/
-			/*g.append("circle")
+			g.append("circle")
+					.attr("class","marker")
 					.attr("cx",xscale(data.toast.a/2))
 					.attr("cy",-hscale(data.toast.h/2))
 					.attr("r",0.5)
 
 			g.append("circle")
+					.attr("class","marker")
 					.attr("cx",-xscale(data.toast.a/2))
 					.attr("cy",-hscale(data.toast.h/2))
-					.attr("r",0.5)*/
+					.attr("r",0.5)
 			/*
 			g.append("circle")
 					.attr("cx",0)
 					.attr("cy",-hscale(data.toast.h/2))
 					.attr("r",1.5)
 			*/
+
+			var ARROW_SIDE=0.015,
+				ARROWS=6;
+
 			var arrows=g.selectAll("path.arrow")
-				.data(d3.range(4))
+				.data(d3.range(ARROWS))
 				.enter()
 					.append("path")
 					.attr("class","arrow")
 					.attr("d",function(){
-						var l=xscale(0.02),
+						var l=xscale(ARROW_SIDE),
 							y=0;
 						
 						return "M"+0+","+0+"l"+(l/2)+","+(-l)+"l"+(l/2)+","+l+"Z";
@@ -555,22 +709,31 @@
 
 			toasts.selectAll("path.arrow")
 				.attr("transform",function(d){
-					var l=xscale(0.02),
-						dx=xscale((data.toast.a-0.02*4)/(4-1)),
+					var l=xscale(ARROW_SIDE),
+						dx=xscale((data.toast.a-ARROW_SIDE*ARROWS)/(ARROWS-1)),
 						x=-xscale(data.toast.a/2)+(l+dx)*d;
 						//x=-xscale(data.toast.a/2)+(l*2*d)+l*3/4;
 
-					return "translate("+x+","+(-hscale(data.toast.h*1.4))+")"
+					return "translate("+x+","+(-hscale(data.toast.h*1.6))+")"
 				})
 
 			toasts.select("g.t rect")
 					.attr("x",-xscale(data.toast.a/2))
 					.attr("width",xscale(data.toast.a))
 
+			toasts.selectAll("circle.marker")
+					.attr("cx",function(d,i){
+						return xscale(data.toast.a/2)*(i?1:-1)
+					})
+
 			toasts.select("g.t line.butter")
+					.attr("x1",-xscale(data.toast.a/2-0.005))
+					.attr("x2",xscale(data.toast.a/2-0.005))	
+
+			/*toasts.select("g.t line.butter")
 					.attr("class","butter")
 					.attr("x1",-xscale(data.toast.a/2))
-					.attr("x2",xscale(data.toast.a/2))
+					.attr("x2",xscale(data.toast.a/2))*/
 
 			/*toasts.select("line.x.dropline")
 					.attr("x2",function(d){
@@ -591,7 +754,7 @@
 						})
 						.attr("height",function(d,i){
 							if (i<current_statuses.length-1) {
-								console.log(i,current_statuses[i+1].y,d.y)
+								//console.log(i,current_statuses[i+1].y,d.y)
 								return hscale(d.y - current_statuses[i+1].y);	
 							}
 							return hscale(data.toast.h);
@@ -600,6 +763,9 @@
 			toasts
 				.classed("visible",function(d,i){
 					return i===0 || i==data.statuses.length-1
+				})
+				.classed("last",function(d,i){
+					return i==data.statuses.length-1
 				})
 				.classed("safe",function(d){
 					return cos(d.rad)>0;
@@ -655,7 +821,17 @@
 					return "translate("+x+","+y+")";
 				});
 
-			angle.html(d3.round(data.end,3)+"&deg;")
+			angle.html(function(){
+				var last=current_statuses[current_statuses.length-1];
+				console.log("LAST",last)
+
+				console.log(Math.sin(last.rad)*(last.y),data.toast.a/2)
+
+				var alpha=d3.round((last.deg%360),3)+"&deg;"
+
+				
+				return alpha;
+			})
 
 			world.select("g.angle")
 				.attr("transform",function(){
@@ -667,7 +843,7 @@
 				.select("text")
 					.html(d3.round(data.statuses[data.statuses.length-1].deg,3)+"&deg;");
 
-			//bigToast.attr("transform","translate("+(margins.left+xscale(data.table.w+data.toast.r))+","+(margins.top-xscale2(data.toast.a)/2-60)+")");
+			//.attr("transform","translate("+(margins.left+xscale(data.table.w+data.toast.r))+","+(margins.top-xscale2(data.toast.a)/2-60)+")");
 			bigToast.attr("transform","translate("+(margins.left+xscale(data.table.w+data.toast.r))+","+(BIG_TOAST_HEIGHT - xscale2(data.toast.a/2) - BIGTOAST_DIST)+")");
 
 			bigToast.select("rect.bread")
@@ -682,6 +858,18 @@
 					.attr("width",xscale2(data.toast.a-0.02))
 					.attr("height",xscale2(data.toast.a-0.02))
 
+			bigToast.select("line.left")
+					.attr("x1",-xscale2(data.toast.a)/2-2)
+					.attr("y1",xscale2(data.toast.a)/2)
+					.attr("x2",-xscale(data.toast.a)/2-2)
+					.attr("y2",BIGTOAST_DIST+xscale2(data.toast.a)/2-hscale(data.toast.h))
+
+			bigToast.select("line.right")
+					.attr("x1",xscale2(data.toast.a)/2+2)
+					.attr("y1",xscale2(data.toast.a)/2)
+					.attr("x2",xscale(data.toast.a)/2+2)
+					.attr("y2",BIGTOAST_DIST+xscale2(data.toast.a)/2-hscale(data.toast.h))
+
 	    }
 
 	    var simulation={
@@ -695,9 +883,29 @@
 				
 			}
 		}
-		calculateStatuses(simulation);
+		calculateStatuses(simulation,true);
 
 		//console.log(simulation)
+		
+
+		function Sentence(options) {
+
+			var sentence=d3.select(options.sentence),
+				indicators=options.indicators;
+
+			this.setValue=function(indicator,value) {
+				sentence.select(indicator).text(value);
+			}
+
+			this.show=function(indicator) {
+				sentence.select(indicator).classed("hidden",false)
+			}
+
+			this.hide=function(indicator) {
+				sentence.select(indicator).classed("hidden",true)
+			}
+
+		}
 		
 		var PHIvsYChart=new Chart([
 				{
@@ -787,10 +995,9 @@
 				simulation.toast.f = options.toast.f;
 			}
 
-			//simulation.table.y=2;
-			calculateStatuses(simulation);
-			//console.log("SHITEEEEEEEEEEEEEEEEE")
-			//console.log(simulation)
+			
+			calculateStatuses(simulation,true);
+			
 			PHIvsYChart.update([
 				{
 					name:"line1",
@@ -840,7 +1047,7 @@
 	    var gui = new dat.GUI();
 
 		var controllers={
-			tableH:gui.add(data.table, "y", 0.1,10),
+			tableH:gui.add(data.table, "y", 0.2,10),
 			bread_size:gui.add(data.toast, "a", 0.1,0.2).step(0.01),
 			overhang:gui.add(data.toast, "r", 0.0,0.05).step(0.01),
 			friction:gui.add(data.toast, "f", 0.1,0.6).step(0.1),

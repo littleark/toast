@@ -1,9 +1,10 @@
 .chart svg {
-	border:1px solid #ddd;
+	border:none;/*1px solid #ddd;*/
+	background: transparent;
 }
 .chart .series path {
 	fill:none;
-	stroke:#aaa;
+	stroke:#E8FF38;
 	stroke-width:1px;
 }
 .chart .series path.bg {

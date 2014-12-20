@@ -1,5 +1,11 @@
 body {
-  	background-color: #f6f6f6;
+  	background-color: #000;
+  	font-family: Georgia;
+  	font-size:16px;
+  	color:#eee;
+}
+.hidden {
+	display: none;
 }
 h1,h2,h3,h4,h5 {
 	/*font-family: 'Roboto Slab', serif;*/
@@ -16,7 +22,13 @@ h4 {
 	border-bottom:1px solid #333;
 }
 #fold h1 {
-	text-align: center;
+	color: #333;
+	font-size:40px;
+}
+#fold p.sentence {
+	font-size: 26px;
+	font-style: italic;;
+	color:#333;
 }
 #toast {
 	line-height: 0;
@@ -24,16 +36,17 @@ h4 {
 }
 #toast svg {
 	
-
-	font-family: sans-serif;
-
 	-webkit-transition: height 1000ms linear;
 	-moz-transition: height 1000ms linear;
 	-ms-transition: height 1000ms linear;
 	-o-transition: height 1000ms linear;
 	transition: height 1000ms linear;
-
 	
+}
+#toast svg text {
+	font-family: Georgia,serif;
+	font-size: 14px;
+	fill:#333;
 }
 #toast svg g#bigToast rect.bread {
 	stroke:#E5A244;
@@ -54,10 +67,23 @@ h4 {
 #toast svg g#table rect {
 	stroke:#B09146;
 	fill:#E6C26D;
-	stroke-width:1;
+	stroke-width:2;
 	shape-rendering: crispEdges;
 }
-
+#toast svg g#table rect.bottom {
+	fill:url(#tableBottomGradient);
+}
+#toast svg g#table rect.leg {
+	fill:#DFC597;
+}
+#toast svg g#table rect.shadow {
+	stroke:none;
+	fill:url(#tableShadowGradient);
+	/*fill-opacity:0.3;*/
+}
+#toast svg g#table text.info {
+	text-anchor:end;
+}
 #toast #table line.dropline {
 	stroke:#aaa;
 	stroke-width:1;
@@ -65,7 +91,7 @@ h4 {
 	shape-rendering: crispEdges;
 	stroke-dasharray: 2,2;
 }
-
+;
 #toast g.angle text {
 	fill:#555;
 	font-size:12px;
@@ -105,13 +131,14 @@ h4 {
 }
 #toast .toast path.arrow {
 	fill-opacity:0;
-	fill:#a0091d;
+	fill:#ff2200;
 	stroke:none;
 }
 #toast .toast.safe path.arrow {
 	fill:#339933;
 }
-#toast .toast.visible path.arrow,
+
+#toast .toast.last path.arrow,
 #toast .toast:hover path.arrow {
 	fill-opacity:0.7;
 }
@@ -120,10 +147,14 @@ h4 {
 }
 #toast .toast line.butter {
 	stroke:#333;
-	stroke-width:1;
-	stroke-opacity:0.05;
+	stroke-width:1.5;
+	stroke-opacity:0;
 	fill:none;
 	
+}
+#toast .toast circle.marker {
+	fill:#333;
+	stroke:none;
 }
 #toast .toast line.dropline {
 	stroke:#333;
@@ -143,6 +174,6 @@ h4 {
 }
 #toast .toast:hover line.butter,
 #toast .toast.visible line.butter {
-	stroke: #000;
+	stroke: gold;
 	stroke-opacity:1;
 }
