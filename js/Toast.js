@@ -8,7 +8,7 @@
 		var data={
 				table:{
 					x:0,
-					y:0.96, //table height m
+					y:0.76, //table height m
 					w:0.6, //table width
 					h:0.05 //table thickness
 				},
@@ -19,7 +19,7 @@
 				toast: {
 					a: 0.15, //bread dimension m (area=a*a)
 					m: 24.0, //bread weight gr
-					h: 0.014, // thickness of the toast m
+					h: 0.018, // thickness of the toast m
 					r: 0.01, //initial hoverang m
 					f:0.5 //dynamic friction coefficient
 				},
@@ -258,7 +258,7 @@
 		var BIG_TOAST_HEIGHT=200;
 
 		var WIDTH=500,
-			HEIGHT=300;
+			HEIGHT=370;
 
 		WIDTH=WIDTH*2;
 
@@ -270,6 +270,38 @@
 					.attr("height",HEIGHT+BIG_TOAST_HEIGHT);
 
   		var defs=svg.append("defs")
+  		defs.html("");
+
+  		/*defs
+			.append("linearGradient")
+				.attr("id","mugGradient")
+				.selectAll("stop")
+					.data([
+						{
+							offset:"0%",
+							stopColor:"#aa0000"
+							//stopColor:"#EDD79D"
+						},
+						{
+							offset:"50%",
+							stopColor:"#ff1100"
+							//stopColor:"#C79637"
+						},
+						{
+							offset:"100%",
+							stopColor:"#aa0000"
+							//stopColor:"#C79637"
+						}
+				])
+					.enter()
+					.append("stop")
+						.attr("offset",function(d){
+							return d.offset;
+						})
+						.attr("stop-color",function(d){
+							return d.stopColor;
+						})*/
+
 
   		defs
 			.append("radialGradient")
@@ -373,7 +405,8 @@
 					.attr("y",-(xscale2(data.toast.a/2)))
 					.attr("width",xscale2(data.toast.a))
 					.attr("height",xscale2(data.toast.a))
-					//.attr("fill","url(#toastGradient)")
+					.attr("fill","url(#toastGradient)")
+					.style("fill","url(#toastGradient)")
 					.attr("rx",3)
 					.attr("ry",3)
 		bigToast.append("rect")
@@ -406,6 +439,22 @@
 
 						return "translate("+x+","+y+")";
 					});
+		/*var mug=world.append("g")
+					.attr("id","mug")
+					.attr("transform",function(){
+
+						var x=xscale(data.table.w/4),
+							y=yscale(data.table.y)-(50+TABLE_STROKE);
+
+						return "translate("+x+","+y+")";
+					});
+		mug.append("path")
+			.attr("d","m 0.5,1.8621826 c 0,0 0,50.0000004 24.080244,50.0000004 l 10.785949,0 5.267546,0 10.78596,0 c 24.080243,0 24.080243,-50.0000004 24.080243,-50.0000004 0.07572,0.1300329 -74.999942,0 -74.999942,0 z")
+			.attr("fill","url(#mugGradient)")
+			.style("fill","url(#mugGradient)")
+			.style("stroke","#333")
+			.style("stroke-width","2")*/
+		
 		table.append("rect")
 				.attr("class","top")
 				.attr("x",0)
@@ -418,7 +467,10 @@
 				.attr("x",0)
 				.attr("y",hscale(data.table.h)-TABLE_STROKE/2)
 				.attr("width",xscale(data.table.w-0.1))
-				.attr("height",hscale(data.table.h*4));
+				.attr("height",hscale(data.table.h*4))
+				.attr("fill","url(#tableBottomGradient)")
+				.style("fill","url(#tableBottomGradient)")
+				
 
 		table.append("rect")
 				.attr("class","leg")
@@ -432,7 +484,9 @@
 				.attr("x",0)
 				.attr("y",hscale(data.table.h))
 				.attr("width",xscale(data.table.w-0.1))
-				.attr("height",hscale(0.03));
+				.attr("height",hscale(0.03))
+				.attr("fill","url(#tableShadowGradient)")
+				.style("fill","url(#tableShadowGradient)")
 
 		function heightFormat(value) {
 			if(value>=1) {
