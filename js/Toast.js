@@ -10,7 +10,7 @@
 					x:0,
 					y:0.76, //table height m
 					w:0.6, //table width
-					h:0.05 //table thickness
+					h:0.04 //table thickness
 				},
 				physics:{
 					g:9.81, // gravity acceleration
@@ -19,7 +19,7 @@
 				toast: {
 					a: 0.15, //bread dimension m (area=a*a)
 					m: 24.0, //bread weight gr
-					h: 0.018, // thickness of the toast m
+					h: 0.014, // thickness of the toast m
 					r: 0.01, //initial hoverang m
 					f:0.5 //dynamic friction coefficient
 				},
@@ -130,8 +130,9 @@
 				vfy = vr*sin(phi);
 			var beta=0;
 
-			//while(((h-yC)/Math.sin(beta)-(data.toast.a/2))>0) {
-			while (yC <= h-data.toast.a/2) {
+			//while ( (h-yC)/Math.cos(beta) >= (data.toast.a/2) ) {
+			//while (yC <= h-data.toast.a/2) {
+			while (h-yC >= data.toast.a/2) {
 
 				
 
@@ -164,34 +165,44 @@
 					if(!silent)
 						console.log("q4")
 					beta=Math.PI*2 - phi;
-				}*/
-
+				}
+				*/
 				//debug();
 
-				/*if (((h-yC)/Math.cos(beta))<(data.toast.a/2)) {
-					break;
-				}*/
+				//if (((h-yC)/Math.cos(beta))<(data.toast.a/2)) {
+				//	break;
+				//}
 
 				
 				
 				//hi=phi%(Math.PI*2)
-
-				statuses.push({
-					t:t,
-					x:xC,
-					y:h-yC,
-					rad:phi,
-					deg:phi*RAD2DEG,
-					p:counter,
-					table:0,
-					beta:beta
-				});
+				//if (h-yC > data.toast.a/2) {
+					statuses.push({
+						t:t,
+						x:xC,
+						y:h-yC,
+						rad:phi,
+						deg:phi*RAD2DEG,
+						p:counter,
+						table:0,
+						beta:beta
+					});
+				//}
 				
 				counter ++;
 
+			} 
+
+
+
+			
+
+			if(!options) {
+				data.statuses=statuses;
+			} else {
+				//console.log("############ END SIMULATION ############# statuses",statuses.length);
+				options.statuses=statuses;
 			}
-
-
 
 			debug("Final conditions");
 
@@ -199,13 +210,6 @@
 				console.log("BREAD SIDE");
 			} else {
 				console.log("BUTTER SIDE");
-			}
-
-			if(!options) {
-				data.statuses=statuses;
-			} else {
-				//console.log("############ END SIMULATION ############# statuses",statuses.length);
-				options.statuses=statuses;
 			}
 
 			function debug(condition) {
@@ -229,13 +233,16 @@
 						"r",r+"",
 						"t",t+"",
 						"xC",xC+"",
-						"yC",yC+""//,
+						"yC",yC+"",
+						"y",(h-yC),
+						"toast side / 2",data.toast.a/2
 						//"beta",beta+"",
 						//"beta deg",(beta*RAD2DEG),
 						//"dist",(h-yC),
 						//"l",(h-yC)/Math.cos(beta),
 						//"touching?",((h-yC)/Math.cos(beta))<(data.toast.a/2)
 					);
+				console.log(statuses)
 				console.log("####################################");
 			}
 		}
@@ -258,7 +265,7 @@
 		var BIG_TOAST_HEIGHT=200;
 
 		var WIDTH=500,
-			HEIGHT=370;
+			HEIGHT=Math.min((window.innerHeight || window.clientHeight)-BIG_TOAST_HEIGHT-20,500);
 
 		WIDTH=WIDTH*2;
 
@@ -334,7 +341,7 @@
 				.selectAll("stop")
 					.data([
 						{
-							offset:"95%",
+							offset:"96%",
 							stopColor:"#C9A533"
 							//stopColor:"#EDD79D"
 						},
@@ -466,24 +473,25 @@
 				.attr("class","bottom")
 				.attr("x",0)
 				.attr("y",hscale(data.table.h)-TABLE_STROKE/2)
-				.attr("width",xscale(data.table.w-0.1))
-				.attr("height",hscale(data.table.h*4))
+				.attr("width",xscale(data.table.w-0.1-0.05))
+				.attr("height",hscale(0.15))
+				//.attr("height",hscale(data.table.h*4))
 				.attr("fill","url(#tableBottomGradient)")
 				.style("fill","url(#tableBottomGradient)")
 				
 
 		table.append("rect")
 				.attr("class","leg")
-				.attr("x",xscale(data.table.w-0.05-0.05))
+				.attr("x",xscale(data.table.w-0.08-0.07))
 				.attr("y",hscale(data.table.h)-TABLE_STROKE/2)
-				.attr("width",xscale(0.05))
+				.attr("width",xscale(0.07))
 				.attr("height",hscale(data.table.y - data.table.h));
 
 		table.append("rect")
 				.attr("class","shadow")
 				.attr("x",0)
 				.attr("y",hscale(data.table.h))
-				.attr("width",xscale(data.table.w-0.1))
+				.attr("width",xscale(data.table.w-0.1-0.05))
 				.attr("height",hscale(0.03))
 				.attr("fill","url(#tableShadowGradient)")
 				.style("fill","url(#tableShadowGradient)")
@@ -697,7 +705,7 @@
 			g.append("rect")
 					.attr("x",-xscale(data.toast.a/2))
 					.attr("y",-hscale(data.toast.h))
-					.attr("width",hscale(data.toast.a))
+					.attr("width",xscale(data.toast.a))
 					.attr("height",hscale(data.toast.h))
 					.attr("rx",1)
 					.attr("ry",1)
