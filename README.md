@@ -1,4 +1,4 @@
-toast
+Bread or Butter
 =====
 
-Visualization of a falling toast
+A visualization of the Buttered toast phenomenon.
