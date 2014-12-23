@@ -176,7 +176,7 @@
 				
 				
 				//hi=phi%(Math.PI*2)
-				//if (h-yC > data.toast.a/2) {
+				if (h-yC >= data.toast.a/2) {
 					statuses.push({
 						t:t,
 						x:xC,
@@ -187,7 +187,7 @@
 						table:0,
 						beta:beta
 					});
-				//}
+				}
 				
 				counter ++;
 
@@ -262,12 +262,23 @@
 			right:30
 		}
 
-		var BIG_TOAST_HEIGHT=200;
+		var BIG_TOAST_HEIGHT=250;
 
 		var WIDTH=500,
-			HEIGHT=Math.min((window.innerHeight || window.clientHeight)-BIG_TOAST_HEIGHT-20,500);
+			HEIGHT=Math.min((window.innerHeight || window.clientHeight)-BIG_TOAST_HEIGHT-60,500);
 
 		WIDTH=WIDTH*2;
+
+		WIDTH=window.innerWidth-40;
+		
+
+		HEIGHT=window.innerHeight - BIG_TOAST_HEIGHT - 60;
+		
+
+
+		WIDTH=window.innerWidth-40;
+
+		var FACTOR_X=WIDTH/HEIGHT;
 
 		var TABLE_STROKE=2;
 
@@ -394,9 +405,14 @@
 							return d.stopOpacity;
 						})
 
-		var xscale=d3.scale.linear().domain([0,1*2]).range([0,WIDTH-(margins.left+margins.right)]),
+		/*var xscale=d3.scale.linear().domain([0,1*2]).range([0,WIDTH-(margins.left+margins.right)]),
 			yscale=d3.scale.linear().domain([0,data.table.y*FACTOR]).range([HEIGHT-(margins.top+margins.bottom)+BIG_TOAST_HEIGHT,BIG_TOAST_HEIGHT]),
-			hscale=d3.scale.linear().domain([0,data.table.y*FACTOR]).range([0,HEIGHT-(margins.top+margins.bottom)]);
+			hscale=d3.scale.linear().domain([0,data.table.y*FACTOR]).range([0,HEIGHT-(margins.top+margins.bottom)]);*/
+
+		//HEIGHT=window.innerHeight - BIG_TOAST_HEIGHT - 20;
+		var xscale=d3.scale.linear().domain([0,data.table.y*FACTOR_X]).range([0,WIDTH-(margins.left+margins.right)]),
+			yscale=d3.scale.linear().domain([0,data.table.y*1]).range([HEIGHT-(margins.top+margins.bottom)+BIG_TOAST_HEIGHT,BIG_TOAST_HEIGHT]),
+			hscale=d3.scale.linear().domain([0,data.table.y*1]).range([0,HEIGHT-(margins.top+margins.bottom)]);
 
 		var xscale2=xscale.copy().domain([0,0.75*2]);
 
@@ -514,17 +530,19 @@
 					.attr("id","floor")
 					.attr("transform","translate(0,"+(BIG_TOAST_HEIGHT+hscale(data.table.y))+")")
 					
-		floor.append("rect")
+		/*floor.append("rect")
 			.attr("x",0)
 			.attr("y",0)
 			.attr("width",xscale.range()[1])
-			.attr("height",3)
+			.attr("height",3)*/
 
-		var ix=world.append("g")
-					.attr("id","ix");
+		
 
 		var toast=world.append("g")
 					.attr("id","toast");
+
+		var ix=world.append("g")
+					.attr("id","ix");
 
 		var angle=world.append("g")
 					.attr("class","angle")
@@ -562,23 +580,51 @@
 	      .attr("transform", "translate("+(WIDTH-(margins.left+margins.right))+",0)")
 	      .call(yAxis)
 
+	    function updateSVGHeight() {
+	    	/*var BIG_TOAST_HEIGHT=200;
+
+			var WIDTH=500,
+				HEIGHT=Math.min((window.innerHeight || window.clientHeight)-BIG_TOAST_HEIGHT-20,500);
+
+			WIDTH=WIDTH*2;
+
+			WIDTH=window.innerWidth-40;
+			var FACTOR_X=WIDTH/500;*/
+
+			//HEIGHT=window.innerHeight - BIG_TOAST_HEIGHT - 20;
+			HEIGHT=HEIGHT * (data.table.y / data.table.old_y);
+			var FACTOR_Y=HEIGHT/500;
+
+			svg.attr("height",HEIGHT+BIG_TOAST_HEIGHT);
+
+			yscale.domain([0,data.table.y]).range([HEIGHT-(margins.top+margins.bottom)+BIG_TOAST_HEIGHT,BIG_TOAST_HEIGHT]),
+			hscale.domain([0,data.table.y]).range([0,HEIGHT-(margins.top+margins.bottom)]);
+
+			data.table.old_y=data.table.y;
+	    }
+
 
 	    function changeTableHeight(h) {
-	    	
+	    	/*
 	    	data.table.y=h || data.table.y;
 	    	//HEIGHT= WIDTH * data.table.y*FACTOR;
 	    	//HEIGHT=Math.round((WIDTH+margins.top)*data.table.y*FACTOR);
-	    	HEIGHT=HEIGHT * (data.table.y / data.table.old_y);
+	    	HEIGHT=(HEIGHT - BIG_TOAST_HEIGHT) * (data.table.y / data.table.old_y) + BIG_TOAST_HEIGHT - 20;
 	    	data.table.old_y=data.table.y;
+
+	    	//HEIGHT=window.innerHeight - BIG_TOAST_HEIGHT - 20;
+			var FACTOR_Y=HEIGHT/500;
 
 	    	svg.attr("height",HEIGHT+BIG_TOAST_HEIGHT);
 
-	    	//yscale.domain([0,data.table.y*FACTOR]).range([HEIGHT-(margins.top+margins.bottom),0]);
+	    	
+			//yscale.domain([0,data.table.y*FACTOR]).range([HEIGHT-(margins.top+margins.bottom)+BIG_TOAST_HEIGHT,BIG_TOAST_HEIGHT]);
 			//hscale.domain([0,data.table.y*FACTOR]).range([0,HEIGHT-(margins.top+margins.bottom)]);
 
-			yscale.domain([0,data.table.y*FACTOR]).range([HEIGHT-(margins.top+margins.bottom)+BIG_TOAST_HEIGHT,BIG_TOAST_HEIGHT]);
-			hscale.domain([0,data.table.y*FACTOR]).range([0,HEIGHT-(margins.top+margins.bottom)]);
-
+			yscale.domain([0,1*FACTOR_Y]).range([HEIGHT-(margins.top+margins.bottom)+BIG_TOAST_HEIGHT,BIG_TOAST_HEIGHT]);
+			hscale.domain([0,1*FACTOR_Y]).range([0,HEIGHT-(margins.top+margins.bottom)]);
+			*/
+			updateSVGHeight();
 			table
 				//.transition()
 				//.duration(DURATION)
@@ -650,6 +696,17 @@
 
 			console.log("UPDATE DATA:",data)	    	
 
+			var ixs=ix.selectAll("g.ix")
+						.data(data.statuses,function(d,i){
+							return "ix"+d.p;
+						});
+
+			var new_ixs=ixs
+						.enter()
+						.append("g")
+							.attr("class","ix")
+
+
 	    	var toasts=toast.selectAll("g.toast")
 						//.data(data.positions,function(d,i){
 						.data(data.statuses,function(d,i){
@@ -675,27 +732,61 @@
 									})
 									.attr("transform",function(d,i){
 										var x=xscale(data.table.w+d.x),
-											y=yscale(d.y);//-hscale(data.toast.h/2),
-											//dy=0;//y-yscale(data.table.y);
-
-
-
+											y=yscale(d.y);
 										return "translate("+(x)+","+y+")"
 									})
-									.on("mouseover",function(){
-										var sel = d3.select(this);
-										sel.moveToFront();
-									})
+									
 							
 
 			toasts.exit().remove();
+			ixs.exit().remove();
 
-			var ix=new_toasts.append("g")
-						.attr("class","ix");
+			new_ixs
+				.attr("transform",function(d,i){
+					var x=xscale(data.table.w+d.x),
+						y=yscale(d.y);
+					return "translate("+(x)+","+y+")"
+				})
+				.on("mouseover",function(d,i){
+								//var sel = d3.select(this);
+								//sel.moveToFront();
 
-			ix.append("rect")
-				.attr("x",0)
-				.attr("y",-hscale(data.toast.h))
+								toasts
+									.selectAll("path.arrow,rect")
+									.style("fill-opacity",0);
+
+								toasts
+									.filter(function(t){
+										if (d.p==t.p || t.p===0 || t.p==data.statuses.length-1) {
+											return 1;
+										}
+										return 0;
+									})
+									.selectAll("path.arrow,rect")
+									.style("fill-opacity",1)
+
+								var TAIL=20;
+								toasts
+									.filter(function(t){
+										return t.p > d.p-TAIL && t.p < d.p;
+									})
+									.selectAll("rect")
+										.style("fill-opacity",function(t,i){
+											console.log("set opacity",t.p,(d.p-t.p),(d.p-t.p)/TAIL)
+											return (TAIL-(d.p-t.p))/TAIL/2-0.1;
+										})
+							})
+
+			new_ixs.append("rect")
+				.attr("x",function(d){
+					return -xscale(d.x)-xscale(0.08)
+				})
+				.attr("y",function(d){
+					if(d.p===0) {
+						return -hscale(data.toast.a/2+data.toast.h)
+					}
+					return -hscale(data.toast.h);	
+				})
 				.attr("width",0)
 				.attr("height",hscale(data.toast.h))
 
@@ -809,17 +900,21 @@
 						return h;
 					})*/
 			var current_statuses=toasts.data();
-			toasts
-				.select("g.ix rect")
+			
+			ixs
+				.select("rect")
 						.attr("width",function(d){
-							return xscale.range()[1] - xscale(data.table.w+d.x)
+							return xscale.range()[1];// - xscale(data.table.w+d.x)
 						})
 						.attr("height",function(d,i){
+							if(i===0) {
+								return hscale(data.toast.a/2);	
+							}
 							if (i<current_statuses.length-1) {
 								//console.log(i,current_statuses[i+1].y,d.y)
 								return hscale(d.y - current_statuses[i+1].y);	
 							}
-							return hscale(data.toast.h);
+							return hscale(data.toast.a/2);
 						})
 
 			toasts
