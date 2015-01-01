@@ -262,7 +262,8 @@
 			right:30
 		}
 
-		var BIG_TOAST_HEIGHT=250;
+		var BIG_TOAST_HEIGHT=260,
+			BIGTOAST_DIST=80;
 
 		var WIDTH=500,
 			HEIGHT=Math.min((window.innerHeight || window.clientHeight)-BIG_TOAST_HEIGHT-60,500);
@@ -414,39 +415,19 @@
 			yscale=d3.scale.linear().domain([0,data.table.y*1]).range([HEIGHT-(margins.top+margins.bottom)+BIG_TOAST_HEIGHT,BIG_TOAST_HEIGHT]),
 			hscale=d3.scale.linear().domain([0,data.table.y*1]).range([0,HEIGHT-(margins.top+margins.bottom)]);
 
-		var xscale2=xscale.copy().domain([0,0.75*2]);
+		var xscale2=xscale.copy();//.domain([0,0.75*2]);
 
-		var BIGTOAST_DIST=60;
-		var bigToast=svg.append("g")
-						.attr("id","bigToast")
-						.attr("transform","translate("+(margins.left+xscale(data.table.w+data.toast.r))+","+(BIG_TOAST_HEIGHT - xscale2(data.toast.a/2) - BIGTOAST_DIST)+")");
-						//.attr("transform","translate("+(margins.left+xscale(data.table.w+data.toast.r))+","+(margins.top-xscale2(data.toast.a)/2-BIGTOAST_DIST)+")");
 		
-		bigToast.append("rect")
-					.attr("class","bread")
-					.attr("x",-xscale2(data.toast.a/2))
-					.attr("y",-(xscale2(data.toast.a/2)))
-					.attr("width",xscale2(data.toast.a))
-					.attr("height",xscale2(data.toast.a))
-					.attr("fill","url(#toastGradient)")
-					.style("fill","url(#toastGradient)")
-					.attr("rx",3)
-					.attr("ry",3)
-		bigToast.append("rect")
-					.attr("class","butter")
-					.attr("x",-xscale2(data.toast.a/2-0.01))
-					.attr("y",-xscale2(data.toast.a/2-0.01))
-					.attr("width",xscale2(data.toast.a-0.02))
-					.attr("height",xscale2(data.toast.a-0.02))
-					.attr("rx",5)
-					.attr("ry",5)
+		var bigToast=new BigToast({
+			container:svg,
+			id:"bigToast"
+		})
 
-		bigToast.append("line")
-				.attr("class","left")
-					
+		var cup=new Cup({
+			container:svg,
+			id:"cup"
+		})
 
-		bigToast.append("line")
-				.attr("class","right")
 					
 		
 		var world=svg.append("g")
@@ -492,8 +473,9 @@
 				.attr("width",xscale(data.table.w-0.1-0.05))
 				.attr("height",hscale(0.15))
 				//.attr("height",hscale(data.table.h*4))
-				.attr("fill","url(#tableBottomGradient)")
-				.style("fill","url(#tableBottomGradient)")
+				//.attr("fill","url(#tableBottomGradient)")
+				//.style("fill","url(#tableBottomGradient)")
+				
 				
 
 		table.append("rect")
@@ -501,17 +483,18 @@
 				.attr("x",xscale(data.table.w-0.08-0.07))
 				.attr("y",hscale(data.table.h)-TABLE_STROKE/2)
 				.attr("width",xscale(0.07))
-				.attr("height",hscale(data.table.y - data.table.h));
+				.attr("height",hscale(data.table.y - data.table.h))
+				
 
-		table.append("rect")
+		/*table.append("rect")
 				.attr("class","shadow")
 				.attr("x",0)
 				.attr("y",hscale(data.table.h))
 				.attr("width",xscale(data.table.w-0.1-0.05))
 				.attr("height",hscale(0.03))
-				.attr("fill","url(#tableShadowGradient)")
-				.style("fill","url(#tableShadowGradient)")
-
+				//.attr("fill","url(#tableShadowGradient)")
+				//.style("fill","url(#tableShadowGradient)")
+		*/
 		function heightFormat(value) {
 			if(value>=1) {
 				return d3.round(value,2)+"m";
@@ -836,34 +819,35 @@
 			
 			ixs
 				.on("mouseover",function(d,i){
-								//var sel = d3.select(this);
-								//sel.moveToFront();
 
-								toasts
-									.selectAll("path.arrow,rect")
-									.style("fill-opacity",0);
+					toasts
+						.selectAll("path.arrow,rect,line.butter")
+						.style("fill-opacity",0)
+						.style("stroke-opacity",0)
 
-								toasts
-									.filter(function(t,i){
-										if (d.p==t.p || i===0 || i==data.statuses.length-1) {
-											return 1;
-										}
-										return 0;
-									})
-									.selectAll("path.arrow,rect")
-									.style("fill-opacity",1)
+					toasts
+						.filter(function(t,i){
+							if (d.p==t.p || i===0 || i==data.statuses.length-1) {
+								return 1;
+							}
+							return 0;
+						})
+						.selectAll("path.arrow,rect,line.butter")
+						.style("fill-opacity",1)
+						.style("stroke-opacity",1)
 
 
-								var TAIL=20;
-								toasts
-									.filter(function(t){
-										return t.p > d.p-TAIL && t.p < d.p;
-									})
-									.selectAll("rect")
-										.style("fill-opacity",function(t,i){
-											return (TAIL-(d.p-t.p))/TAIL/2-0.1;
-										})
+
+					var TAIL=20;
+					toasts
+						.filter(function(t){
+							return t.p > d.p-TAIL && t.p < d.p;
+						})
+						.selectAll("rect")
+							.style("fill-opacity",function(t,i){
+								return (TAIL-(d.p-t.p))/TAIL/2-0.1;
 							})
+				})
 				.select("rect")
 						.attr("width",function(d){
 							return xscale.range()[1];// - xscale(data.table.w+d.x)
@@ -976,8 +960,8 @@
 				.select("text")
 					.html(d3.round(data.statuses[data.statuses.length-1].deg,3)+"&deg;");
 
-			//.attr("transform","translate("+(margins.left+xscale(data.table.w+data.toast.r))+","+(margins.top-xscale2(data.toast.a)/2-60)+")");
-			bigToast.attr("transform","translate("+(margins.left+xscale(data.table.w+data.toast.r))+","+(BIG_TOAST_HEIGHT - xscale2(data.toast.a/2) - BIGTOAST_DIST)+")");
+			
+			/*bigToast.attr("transform","translate("+(margins.left+xscale(data.table.w+data.toast.r))+","+(BIG_TOAST_HEIGHT - xscale2(data.toast.a/2) - BIGTOAST_DIST)+")");
 
 			bigToast.select("rect.bread")
 						.attr("x",-xscale2(data.toast.a)/2)
@@ -989,19 +973,11 @@
 					.attr("x",-xscale2(data.toast.a/2-0.01))
 					.attr("y",-xscale2(data.toast.a/2-0.01))
 					.attr("width",xscale2(data.toast.a-0.02))
-					.attr("height",xscale2(data.toast.a-0.02))
+					.attr("height",xscale2(data.toast.a-0.02))*/
+			
+			bigToast.update();
 
-			bigToast.select("line.left")
-					.attr("x1",-xscale2(data.toast.a)/2-2)
-					.attr("y1",xscale2(data.toast.a)/2)
-					.attr("x2",-xscale(data.toast.a)/2-2)
-					.attr("y2",BIGTOAST_DIST+xscale2(data.toast.a)/2-hscale(data.toast.h))
-
-			bigToast.select("line.right")
-					.attr("x1",xscale2(data.toast.a)/2+2)
-					.attr("y1",xscale2(data.toast.a)/2)
-					.attr("x2",xscale(data.toast.a)/2+2)
-					.attr("y2",BIGTOAST_DIST+xscale2(data.toast.a)/2-hscale(data.toast.h))
+			
 
 	    }
 
@@ -1222,3 +1198,152 @@
 		    this.parentNode.appendChild(this);
 		  });
 		};
+
+function Cup(options) {
+	var smoke_small_path="m 0,0 c -7.9853091,4.18678 -16.235929,9.63543 -14.637579,19.743246 1.73425,10.93612 10.72905,18.55258 0.88654,28.809245 -1.26833,1.3201 1.79896,1.22951 2.50431,0.49827 5.9533899,-6.205765 6.45813,-12.295045 3.3908399,-20.150935 -1.48187,-3.79205 -3.2420099,-7.35762 -3.8891099,-11.42145 C -13.065099,9.1501 -4.257969,4.14149 1.92838,0.89948 z";
+	var smoke_path="m 0,0 c -10.786925,5.961939 -18.773888,13.377597 -16.318971,26.506308 2.896122,15.459185 16.273719,28.305072 4.12358,43.47012 -0.757969,0.944633 1.996741,0.729687 2.539764,0.05091 C 10.147742,45.319793 -34.402767,20.736691 1.69129,0.797567 3.30339,-0.096159 0.876756,-0.4808 0,2e-6 z";
+
+	var cup_path="m 0,0 c 0,0 -2.86729498,98.77329823 18.43259352,98.77329823 21.299883,0 23.347938,0 23.347938,0 l 4.431732,0 c 0,0 -4.09613,0 17.203748,0 21.299881,0 18.432589,-98.77329823 18.432589,-98.77329823 z";
+
+	var size_cm=xscale.invert(110);
+
+	var x=margins.left+xscale(0.1),
+		y=BIG_TOAST_HEIGHT-(100*data.toast.a/size_cm);
+
+	
+
+	var cup=options.container.append("g")
+					.attr("id",options.id)
+					.attr("transform","translate("+(x)+","+(y+1)+") scale("+(data.toast.a/size_cm)+")");
+
+	cup.append("path")
+		.attr("d",cup_path)
+		
+
+	cup.append("path")
+		.attr("d",smoke_small_path)
+		.attr("transform","translate("+xscale(0.06)+","+(-xscale(0.12))+")")
+		
+
+	cup.append("path")
+		.attr("d",smoke_small_path)
+		.attr("transform","translate("+xscale(0.18)+","+(-xscale(0.12))+")")
+		
+
+	cup.append("path")
+		.attr("d",smoke_path)
+		.attr("transform","translate("+xscale(0.12)+","+(-xscale(0.17))+")")
+		
+}
+
+function BigToast(options) {
+
+	
+	
+	var d="m 95.161829,98.60232 c -22.408255,1.0226 -70.826949,2.5533 -90.8720704,0 C 1.0196925,78.79162 -0.00539653,61.02592 0.55664608,45.31811 0.76421863,39.49512 4.5324588,34.07612 4.2897586,29.57554 4.0757992,25.57677 -1.8000995,21.6001 0.55664608,16.25369 c 9.95709592,-22.5818098 90.87207092,-20.7418098 98.33829592,0 1.900088,5.27698 -3.64689,10.40247 -3.733113,13.32185 -0.105383,3.55375 3.270066,8.39204 3.733113,12.10991 2.187498,17.64567 1.219888,38.67157 -3.733113,56.91687 z";
+
+	var size_cm=xscale.invert(100);
+	var SIZE_FACTOR=2;
+	var bigToastScale=xscale.copy().domain([0,xscale.domain()[1]*(1/SIZE_FACTOR)]);
+
+	var size=bigToastScale(data.toast.a);
+
+	var x=margins.left+xscale(data.table.w+data.toast.r),
+		y=BIG_TOAST_HEIGHT- BIGTOAST_DIST;// - bigToastScale(data.toast.a/2) - BIGTOAST_DIST;
+
+    var bigToast=options.container.append("g")
+					.attr("id",options.id)
+					.attr("transform","translate("+(x)+","+(y)+")");
+
+	var toast=bigToast.append("g")
+					.attr("transform","translate("+(-bigToastScale(data.toast.a/2))+","+(-bigToastScale(data.toast.a))+") scale("+(SIZE_FACTOR*(data.toast.a/size_cm))+")")
+
+	//console.log("SIZE:",options.size)
+
+	toast
+		.append("path")
+		.attr("d",d)
+		//.attr("transform","scale("+(data.toast.a/size_cm)+")")
+		.style("fill","#000")
+
+	/*toast.append("circle")
+			.attr("cx",0)
+			.attr("cy",0)
+			.attr("r",2)
+			.style("fill","red")
+*/
+	toast.append("line")
+			.attr("class","butter")
+			.attr("x1",85)
+			.attr("x2",15)
+			.attr("y1",15)
+			.attr("y2",85)
+
+	toast.append("line")
+			.attr("class","butter")
+			.attr("x1",60)
+			.attr("x2",15)
+			.attr("y1",15)
+			.attr("y2",60)
+
+	toast.append("line")
+			.attr("class","butter")
+			.attr("x1",35)
+			.attr("x2",15)
+			.attr("y1",15)
+			.attr("y2",35)
+
+	toast.append("line")
+			.attr("class","butter")
+			.attr("x1",85)
+			.attr("x2",40)
+			.attr("y1",40)
+			.attr("y2",85)
+
+	toast.append("line")
+			.attr("class","butter")
+			.attr("x1",85)
+			.attr("x2",65)
+			.attr("y1",65)
+			.attr("y2",85)
+	
+	bigToast.append("line")
+			.attr("class","left lens")
+			
+				
+
+	bigToast.append("line")
+			.attr("class","right lens")
+			
+
+	
+	this.update=function() {
+		var old_bigToastScale_size=bigToastScale.domain()[1];
+		
+		bigToastScale=xscale.copy().domain([0,xscale.domain()[1]*(1/SIZE_FACTOR)]);
+
+		x=margins.left+xscale(data.table.w+data.toast.r);
+		y=BIG_TOAST_HEIGHT- BIGTOAST_DIST;
+
+
+		bigToast.attr("transform","translate("+(x)+","+(y)+")");
+
+		toast.attr("transform","translate("+(-bigToastScale(data.toast.a/2))+","+(-bigToastScale(data.toast.a))+") scale("+(SIZE_FACTOR*(data.toast.a/size_cm))+")")
+		//toast.select("path")
+		//	.attr("transform","scale("+(data.toast.a/size_cm)+")")
+
+		bigToast.select("line.left")
+			.attr("y1",0)
+			.attr("y2",BIGTOAST_DIST-hscale(data.toast.h))
+			.attr("x1",-bigToastScale(data.toast.a/2))
+			.attr("x2",-xscale(data.toast.a/2)-2)
+				
+
+		bigToast.select("line.right")
+			.attr("y1",0)
+			.attr("y2",BIGTOAST_DIST-hscale(data.toast.h))
+			.attr("x1",bigToastScale(data.toast.a/2))
+			.attr("x2",xscale(data.toast.a/2)+2)
+	}
+
+}

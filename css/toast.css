@@ -59,10 +59,23 @@ h4 {
 	fill:#fff;
 	fill-opacity:0.4;
 }
-#toast svg g#bigToast line {
+#toast svg g#bigToast line.butter {
+	stroke:#fff;
+	stroke-width:3;
+	stroke-linecap: round;
+}
+#toast svg g#bigToast line.lens {
 	stroke:#aaa;
 	stroke-width:2;
 	stroke-dasharray: 2 2;
+}
+#toast svg g#cup path {
+	fill:#000;
+	stroke:none;
+}
+#toast svg g#table rect {
+	fill:#000 !important;
+	stroke:#fff !important;
 }
 #toast svg g#table rect {
 	stroke:#B09146;
@@ -131,6 +144,7 @@ h4 {
 }
 #toast .toast rect {
 	fill:#E5A244;
+	fill:#000;
 	fill-opacity:0;
 	stroke:none;
 }
@@ -155,10 +169,11 @@ h4 {
 	fill-opacity:1;
 }
 #toast .toast line.butter {
-	stroke:#333;
-	stroke-width:1.5;
+	stroke:#ddd;
+	stroke-width:2;
 	stroke-opacity:0;
 	fill:none;
+	stroke-linecap: round;
 }
 #toast .toast circle.marker {
 	fill:#333;
@@ -182,6 +197,6 @@ h4 {
 }*/
 #toast .toast:hover line.butter,
 #toast .toast.visible line.butter {
-	stroke: gold;
+	stroke: #ddd;
 	stroke-opacity:1;
 }

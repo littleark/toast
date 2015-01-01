@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="100"
+   height="100"
+   id="svg3825"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="bread.svg">
+  <defs
+     id="defs3827" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.767284"
+     inkscape:cx="-57.938939"
+     inkscape:cy="111.16661"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="872"
+     inkscape:window-height="556"
+     inkscape:window-x="283"
+     inkscape:window-y="148"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata3830">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-952.36218)">
+    <g
+       id="toast"
+       transform="matrix(3.1934239,0,0,3.1560884,-32.875082,-1762.2885)">
+      <path
+         id="path5"
+         d="m 40.093929,891.37333 c -7.017,0.324 -22.179,0.809 -28.456,0 -1.024,-6.277 -1.345,-11.906 -1.169,-16.883 0.065,-1.845 1.245,-3.562 1.169,-4.988 -0.067,-1.267 -1.9069996,-2.527 -1.169,-4.221 3.118,-7.155 28.456,-6.572 30.794,0 0.595,1.672 -1.142,3.296 -1.169,4.221 -0.033,1.126 1.024,2.659 1.169,3.837 0.685,5.591 0.382,12.253 -1.169,18.034 z"
+         clip-rule="evenodd"
+         inkscape:connector-curvature="0"
+         style="fill-rule:evenodd" />
+      <polygon
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.39999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         id="polygon7"
+         points="253.606,191.847 275.2,167.48 275.445,167.69 253.851,192.058 "
+         clip-rule="evenodd"
+         transform="translate(-238.29636,697.79233)" />
+      <polygon
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.39999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         id="polygon9"
+         points="252.658,183.521 268.161,166.027 268.406,166.238 252.903,183.732 "
+         clip-rule="evenodd"
+         transform="translate(-238.29636,697.79233)" />
+      <polygon
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.39999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         id="polygon11"
+         points="260.379,165.208 260.624,165.419 251.783,175.396 251.538,175.185 "
+         clip-rule="evenodd"
+         transform="translate(-237.67007,697.79233)" />
+      <polygon
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.39999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         id="polygon13"
+         points="277.036,174.943 276.788,174.736 261.532,192.44 261.781,192.647 "
+         clip-rule="evenodd"
+         transform="translate(-238.92265,697.79233)" />
+      <polygon
+         style="fill:#ffffff;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.39999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         id="polygon15"
+         points="277.168,183.715 269.929,192.162 270.177,192.37 277.415,183.922 "
+         clip-rule="evenodd"
+         transform="translate(-239.54894,697.79233)" />
+    </g>
+  </g>
+</svg>
