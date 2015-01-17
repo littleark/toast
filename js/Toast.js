@@ -93,7 +93,7 @@
 
 			statuses.push({
 				t:t,
-				x:r,
+				x:xC,
 				y:h-yC,
 				rad:phi,
 				deg:phi*RAD2DEG,
@@ -155,7 +155,7 @@
 
 			//while ( (h-yC)/Math.cos(beta) >= (data.toast.a/2) ) {
 			//while (yC <= h-data.toast.a/2) {
-			while (h-yC >= data.toast.a/2) {
+			while (h-yC >= 0){//data.toast.a/2) {
 
 				
 
@@ -196,10 +196,23 @@
 				//	break;
 				//}
 
-				
+				var alpha=phi%(Math.PI/2);
+
+				if(phi>Math.PI/2 && phi<=Math.PI) {
+					alpha=Math.PI/2 - alpha;
+				}
+
+				if(phi>Math.PI*3/2 && phi<2*Math.PI) {
+					alpha=Math.PI/2 - alpha;
+				}
+
+				var b=data.toast.a/2 * Math.sin(alpha);
+
+				console.log(h-yC,">",b)
 				
 				//hi=phi%(Math.PI*2)
-				if (h-yC >= data.toast.a/2) {
+				//if (h-yC >= data.toast.a/2) {
+				if (h-yC >= b) {
 					statuses.push({
 						t:t,
 						x:xC,
@@ -409,48 +422,12 @@
 				.attr("width",xscale(0.07))
 				.attr("height",hscale(data.table.y - data.table.h))
 		
-		/*table.append("line")
-				.attr("class","tableEdge")
-				.attr("x1",xscale(data.table.w-0.08-0.07-0.04))
-				.attr("x2",xscale(data.table.w-0.08-0.07-0.04))
-				.attr("y1",hscale(data.table.y*2/3))
-				.attr("y2",hscale(data.table.y)-20)
-
-		table.append("circle")
-				.attr("class","tableEdge")
-				.attr("cx",xscale(data.table.w-0.08-0.07-0.04))
-				.attr("cy",hscale(data.table.y*2/3)-4)
-				.attr("r",1.5)
-
-		table.append("circle")
-				.attr("class","tableEdge")
-				.attr("cx",xscale(data.table.w-0.08-0.07-0.04))
-				.attr("cy",hscale(data.table.y*2/3)-10)
-				.attr("r",1.5)*/
-
-		/*table.append("rect")
-				.attr("class","shadow")
-				.attr("x",0)
-				.attr("y",hscale(data.table.h))
-				.attr("width",xscale(data.table.w-0.1-0.05))
-				.attr("height",hscale(0.03))
-				//.attr("fill","url(#tableShadowGradient)")
-				//.style("fill","url(#tableShadowGradient)")
-		*/
 		function heightFormat(value) {
 			if(value>=1) {
 				return d3.round(value,2)+"m";
 			}
 			return d3.round(value*100,0)+"cm";
 		}
-
-		/*table.append("text")
-				.attr("class","info")
-				.attr("x",xscale(data.table.w-0.08-0.07-0.04))
-				//.attr("y",hscale(data.table.h*5+(data.table.y-data.table.h*5)/2))
-				.attr("y",hscale(data.table.y)-5)
-				.text(heightFormat(data.table.y))*/
-
 
 		var floor=world.append("g")
 					.attr("id","floor")
@@ -478,39 +455,8 @@
 
 		update();
 
-		
-
-		//AXIS
-
-		//var xAxis = d3.svg.axis().scale(xscale).orient("top");
-		//var yAxis = d3.svg.axis().scale(yscale).orient("right");
-
-		
-
-		
-
-		/*axes.append("g")
-	      .attr("class", "x axis")
-	      .attr("transform", "translate(0,0)")
-	      .call(xAxis)
-
-	   	axes.append("g")
-	      .attr("class", "y axis")
-	      .attr("transform", "translate("+(WIDTH-(margins.left+margins.right))+",0)")
-	      .call(yAxis)*/
-
 	    function updateSVGHeight() {
-	    	/*var BIG_TOAST_HEIGHT=200;
 
-			var WIDTH=500,
-				HEIGHT=Math.min((window.innerHeight || window.clientHeight)-BIG_TOAST_HEIGHT-20,500);
-
-			WIDTH=WIDTH*2;
-
-			WIDTH=window.innerWidth-40;
-			var FACTOR_X=WIDTH/500;*/
-
-			//HEIGHT=window.innerHeight - BIG_TOAST_HEIGHT - 20;
 			HEIGHT=HEIGHT * (data.table.y / data.table.old_y);
 			var FACTOR_Y=HEIGHT/500;
 
@@ -524,25 +470,7 @@
 
 
 	    function changeTableHeight(h) {
-	    	/*
-	    	data.table.y=h || data.table.y;
-	    	//HEIGHT= WIDTH * data.table.y*FACTOR;
-	    	//HEIGHT=Math.round((WIDTH+margins.top)*data.table.y*FACTOR);
-	    	HEIGHT=(HEIGHT - BIG_TOAST_HEIGHT) * (data.table.y / data.table.old_y) + BIG_TOAST_HEIGHT - 20;
-	    	data.table.old_y=data.table.y;
 
-	    	//HEIGHT=window.innerHeight - BIG_TOAST_HEIGHT - 20;
-			var FACTOR_Y=HEIGHT/500;
-
-	    	svg.attr("height",HEIGHT+BIG_TOAST_HEIGHT);
-
-	    	
-			//yscale.domain([0,data.table.y*FACTOR]).range([HEIGHT-(margins.top+margins.bottom)+BIG_TOAST_HEIGHT,BIG_TOAST_HEIGHT]);
-			//hscale.domain([0,data.table.y*FACTOR]).range([0,HEIGHT-(margins.top+margins.bottom)]);
-
-			yscale.domain([0,1*FACTOR_Y]).range([HEIGHT-(margins.top+margins.bottom)+BIG_TOAST_HEIGHT,BIG_TOAST_HEIGHT]);
-			hscale.domain([0,1*FACTOR_Y]).range([0,HEIGHT-(margins.top+margins.bottom)]);
-			*/
 			updateSVGHeight();
 			table
 				//.transition()
@@ -554,16 +482,7 @@
 
 					return "translate("+x+","+y+")";
 				});
-			/*table.select("rect.top")
-					.transition()
-					.duration(DURATION)
-					.attr("height",hscale(data.table.h));
 
-			table.select("rect.bottom")
-					.transition()
-					.duration(DURATION)	
-						.attr("y",hscale(data.table.h))
-						.attr("height",hscale(data.table.h*3));*/
 
 			table.select("rect.leg")
 					.transition()
@@ -574,11 +493,6 @@
 							update();
 						})
 
-			/*axes.selectAll(".y.axis")
-				.transition()
-				.duration(DURATION)
-					.call(yAxis);*/
-			
 			floor
 				.transition()
 				.duration(DURATION)
@@ -608,8 +522,6 @@
 	    	sentence.setValue("#breadStatus",(cos(data.statuses[data.statuses.length-1].rad)>0)?"up":"down");
 	    }
 	    function update() {
-	    	//data.end=calculateTimeAngle();
-	    	//calculateAllPositions();
 
 	    	var  last_status=data.statuses[data.statuses.length-1];
 
@@ -629,6 +541,36 @@
 						.enter()
 						.append("g")
 							.attr("class","ix")
+							.on("mouseover",function(d,i){
+
+								toasts
+									.selectAll("path.arrow,rect,line.butter")
+									.style("fill-opacity",0)
+									.style("stroke-opacity",0)
+
+								toasts
+									.filter(function(t,i){
+										if (d.p==t.p || i===0 || i==data.statuses.length-1) {
+											return 1;
+										}
+										return 0;
+									})
+									.selectAll("path.arrow,rect,line.butter")
+									.style("fill-opacity",1)
+									.style("stroke-opacity",1)
+
+
+
+								var TAIL=15;
+								toasts
+									.filter(function(t){
+										return t.p > d.p-TAIL && t.p < d.p;
+									})
+									.selectAll("rect")
+										.style("fill-opacity",function(t,i){
+											return (TAIL-(d.p-t.p))/TAIL/2-0.1;
+										})
+							});
 
 
 	    	var toasts=toast.selectAll("g.toast")
@@ -665,12 +607,12 @@
 			toasts.exit().remove();
 			ixs.exit().remove();
 
-			new_ixs
+			/*new_ixs
 				.attr("transform",function(d,i){
 					var x=xscale(data.table.w),
 						y=yscale(d.y);
 					return "translate("+(x)+","+y+")"
-				})
+				})*/
 				
 			var ixs_info=new_ixs.append("g")
 							.attr("class","info")
@@ -681,6 +623,9 @@
 						})
 						.attr("y1",0)
 						.attr("y2",0)
+			ixs_info.append("text")
+						.attr("x",0)
+						.attr("y",-6)
 
 			new_ixs.append("rect")
 				.attr("x",function(d){
@@ -779,35 +724,10 @@
 			var current_statuses=toasts.data();
 			
 			ixs
-				.on("mouseover",function(d,i){
-
-					toasts
-						.selectAll("path.arrow,rect,line.butter")
-						.style("fill-opacity",0)
-						.style("stroke-opacity",0)
-
-					toasts
-						.filter(function(t,i){
-							if (d.p==t.p || i===0 || i==data.statuses.length-1) {
-								return 1;
-							}
-							return 0;
-						})
-						.selectAll("path.arrow,rect,line.butter")
-						.style("fill-opacity",1)
-						.style("stroke-opacity",1)
-
-
-
-					var TAIL=15;
-					toasts
-						.filter(function(t){
-							return t.p > d.p-TAIL && t.p < d.p;
-						})
-						.selectAll("rect")
-							.style("fill-opacity",function(t,i){
-								return (TAIL-(d.p-t.p))/TAIL/2-0.1;
-							})
+				.attr("transform",function(d,i){
+					var x=xscale(data.table.w),
+						y=yscale(d.y);
+					return "translate("+(x)+","+y+")"
 				})
 				.select("rect")
 						.attr("width",function(d){
@@ -825,12 +745,31 @@
 						})
 			ixs.select("g.info line")
 					.attr("x1",function(d){
-						return xscale(d.x);
+						return xscale(d.x)+xscale(0.2);
 					})
 					.attr("x2",function(d){
-						return xscale.range()[1];
+						return xscale.range()[1]-xscale(0.65);
 					})
+			ixs.select("g.info text")
+					.attr("x",function(d){
+						return xscale(d.x)+xscale(0.2);
+					})
+					.html(function(d){
 
+						var y=(data.table.y-d.y),
+							measures={
+								x:" cm",
+								y:" m",
+								deg:"&deg;",
+								t:" seconds"
+							}
+						if(y<1) {
+							y*=100;
+							measures.y=" cm";
+						}
+
+						return "x:"+d3.format(",.2f")(d.x*100)+measures.x+" y:"+d3.format(",.2f")(y)+measures.y+" deg:"+d3.format(",.2f")(d.deg)+measures.deg+" time:"+d3.format(",.2f")(d.t)+measures.t;
+					})
 			toasts
 				.selectAll("path.arrow,rect")
 					.style("fill-opacity",0)
@@ -1410,12 +1349,13 @@ function BigToast(options) {
 	}
 
 }
-
+/*
 function Sentence() {
 
 
 	this.update=function() {
-		
+
 	}
 
 }
+*/

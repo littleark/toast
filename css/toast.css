@@ -183,7 +183,7 @@ h4 {
 }
 .ix rect {
 	fill:#000;
-	fill-opacity:0.1 !important;
+	fill-opacity:0 !important;
 }
 .ix g.info {
 	display: none;
@@ -192,7 +192,7 @@ h4 {
 	display: block;
 }
 .ix g.info line {
-	stroke:#000;
+	stroke:#aaa;
 	stroke-width:1;
 	shape-rendering: crispEdges;
 }
