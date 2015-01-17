@@ -93,7 +93,7 @@
 
 			statuses.push({
 				t:t,
-				x:xC,
+				x:r,
 				y:h-yC,
 				rad:phi,
 				deg:phi*RAD2DEG,
@@ -151,9 +151,8 @@
 			
 			var vfx = vr*cos(phi),
 				vfy = vr*sin(phi);
-			var beta=0;
 
-			//while ( (h-yC)/Math.cos(beta) >= (data.toast.a/2) ) {
+			
 			//while (yC <= h-data.toast.a/2) {
 			while (h-yC >= 0){//data.toast.a/2) {
 
@@ -168,33 +167,7 @@
 
 				t = t + dt;
 
-				/*
-				if(phi>=0 && phi<Math.PI/2) {
-					if(!silent)
-						console.log("q1")
-					beta=phi;
-				}
-				if(phi>=Math.PI/2 && phi<Math.PI) {
-					if(!silent)
-						console.log("q2")
-					beta=Math.PI - phi;
-				}
-				if(phi>=Math.PI && phi<2*Math.PI*3/4) {
-					if(!silent)
-						console.log("q3")
-					beta=phi - Math.PI;
-				}
-				if(phi>=2*Math.PI*3/4 && phi<2*Math.PI*2) {
-					if(!silent)
-						console.log("q4")
-					beta=Math.PI*2 - phi;
-				}
-				*/
 				//debug();
-
-				//if (((h-yC)/Math.cos(beta))<(data.toast.a/2)) {
-				//	break;
-				//}
 
 				var alpha=phi%(Math.PI/2);
 
@@ -221,7 +194,6 @@
 						deg:phi*RAD2DEG,
 						p:counter,
 						table:0,
-						beta:beta
 					});
 				}
 				
@@ -272,11 +244,6 @@
 						"yC",yC+"",
 						"y",(h-yC),
 						"toast side / 2",data.toast.a/2
-						//"beta",beta+"",
-						//"beta deg",(beta*RAD2DEG),
-						//"dist",(h-yC),
-						//"l",(h-yC)/Math.cos(beta),
-						//"touching?",((h-yC)/Math.cos(beta))<(data.toast.a/2)
 					);
 				console.log(statuses)
 				console.log("####################################");
@@ -293,7 +260,7 @@
 
 		var margins={
 			top:0,
-			bottom:0,
+			bottom:10,
 			left:0,
 			right:30
 		}
@@ -429,10 +396,19 @@
 			return d3.round(value*100,0)+"cm";
 		}
 
+		
+					
+
+		
+
 		var floor=world.append("g")
 					.attr("id","floor")
 					.attr("transform","translate(0,"+(BIG_TOAST_HEIGHT+hscale(data.table.y))+")")
-					
+		floor.append("rect")
+				.attr("x",0)
+				.attr("y",0)
+				.attr("width",WIDTH+100)
+				.attr("height",margins.bottom)
 
 		var toast=world.append("g")
 					.attr("id","toast");
@@ -440,7 +416,7 @@
 		var ix=world.append("g")
 					.attr("id","ix");
 
-		var angle=world.append("g")
+		/*var angle=world.append("g")
 					.attr("class","angle")
 					.attr("transform",function(){
 						var x=xscale(data.table.x+data.table.w)+30,
@@ -451,7 +427,7 @@
 						.attr("x",0)
 						.attr("y",0)
 						//.html(d3.round(data.end.thetaDeg,3)+"&deg;")
-						.html(d3.round(data.statuses[data.statuses.length-1].deg,3)+"&deg;")
+						.html(d3.round(data.statuses[data.statuses.length-1].deg,3)+"&deg;")*/
 
 		update();
 
@@ -751,10 +727,10 @@
 						return xscale.range()[1]-xscale(0.65);
 					})
 			ixs.select("g.info text")
-					.attr("x",function(d){
+					.attr("x",function(d,i){
 						return xscale(d.x)+xscale(0.2);
 					})
-					.html(function(d){
+					.html(function(d,i){
 
 						var y=(data.table.y-d.y),
 							measures={
@@ -767,6 +743,16 @@
 							y*=100;
 							measures.y=" cm";
 						}
+
+						if(d.table) {
+							return "The toast has not left the table yet after rotating by "+d3.format(",.2f")(d.deg)+measures.deg;
+						}
+
+						if(i==current_statuses.length-1) {
+							return "After falling for "+d3.format(",.2f")(d.t)+measures.t+" the toast lands butter-side "+(d.rad>0?"down":"up");
+						}
+
+						return "After "+d3.format(",.2f")(d.t)+measures.t+" the toast has rotated by "+d3.format(",.2f")(d.deg)+measures.deg
 
 						return "x:"+d3.format(",.2f")(d.x*100)+measures.x+" y:"+d3.format(",.2f")(y)+measures.y+" deg:"+d3.format(",.2f")(d.deg)+measures.deg+" time:"+d3.format(",.2f")(d.t)+measures.t;
 					})
@@ -845,7 +831,7 @@
 					return "translate("+x+","+y+")";
 				});
 
-			angle.html(function(){
+			/*angle.html(function(){
 				var last=current_statuses[current_statuses.length-1];
 				console.log("LAST",last)
 
@@ -855,9 +841,9 @@
 
 				
 				return alpha;
-			})
+			})*/
 
-			world.select("g.angle")
+			/*world.select("g.angle")
 				.attr("transform",function(){
 					var d=toasts.data()[toasts.data().length-1];
 					var x=xscale(data.table.x+data.table.w)+d.x,
@@ -865,7 +851,7 @@
 					return "translate("+x+","+y+")"
 				})
 				.select("text")
-					.html(d3.round(data.statuses[data.statuses.length-1].deg,3)+"&deg;");
+					.html(d3.round(data.statuses[data.statuses.length-1].deg,3)+"&deg;");*/
 			
 			bigToast.update();
 
