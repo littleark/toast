@@ -444,6 +444,12 @@
 			floor.select("rect")
 				.attr("width",WIDTH);
 
+			ix.selectAll("g.ix")
+				.select("g.info line")
+					.attr("x2",function(d){
+						return WIDTH-xscale(data.table.w)-margins.left-margins.right-xscale(0.2);
+					})
+
 			axis.update();
 
 		}
@@ -500,6 +506,7 @@
 			
 
 	    }
+
 	    function updateSentence() {
 	    	sentence.setValue("#breadSize",(data.toast.a*100)+"cm");
 	    	sentence.setValue("#breadOut",((data.toast.r+data.toast.a/2)*100)+"cm");
@@ -513,6 +520,39 @@
 			}
 			
 	    	sentence.setValue("#breadStatus",(cos(data.statuses[data.statuses.length-1].rad)>0)?"up":"down");
+	    }
+
+	    function showInfo(d,i) {
+
+	    	var toasts=toast.selectAll("g.toast");
+
+	    	toasts
+				.selectAll("path.arrow,rect,line.butter")
+				.style("fill-opacity",0)
+				.style("stroke-opacity",0)
+
+			toasts
+				.filter(function(t,i){
+					if (d.p==t.p || i===0 || i==data.statuses.length-1) {
+						return 1;
+					}
+					return 0;
+				})
+				.selectAll("path.arrow,rect,line.butter")
+				.style("fill-opacity",1)
+				.style("stroke-opacity",1)
+
+
+
+			var TAIL=15;
+			toasts
+				.filter(function(t){
+					return t.p > d.p-TAIL && t.p < d.p;
+				})
+				.selectAll("rect")
+					.style("fill-opacity",function(t,i){
+						return (TAIL-(d.p-t.p))/TAIL/2-0.1;
+					})
 	    }
 	    function update() {
 
@@ -535,34 +575,10 @@
 						.append("g")
 							.attr("class","ix")
 							.on("mouseover",function(d,i){
-
-								toasts
-									.selectAll("path.arrow,rect,line.butter")
-									.style("fill-opacity",0)
-									.style("stroke-opacity",0)
-
-								toasts
-									.filter(function(t,i){
-										if (d.p==t.p || i===0 || i==data.statuses.length-1) {
-											return 1;
-										}
-										return 0;
-									})
-									.selectAll("path.arrow,rect,line.butter")
-									.style("fill-opacity",1)
-									.style("stroke-opacity",1)
-
-
-
-								var TAIL=15;
-								toasts
-									.filter(function(t){
-										return t.p > d.p-TAIL && t.p < d.p;
-									})
-									.selectAll("rect")
-										.style("fill-opacity",function(t,i){
-											return (TAIL-(d.p-t.p))/TAIL/2-0.1;
-										})
+								showInfo(d,i)
+							})
+							.on("mousedown",function(d,i){
+								showInfo(d,i)
 							});
 
 
@@ -741,19 +757,19 @@
 						return xscale(d.x)+xscale(0.2);
 					})
 					.attr("x2",function(d){
-						return xscale.range()[1]-xscale(0.65);
+						return WIDTH-xscale(data.table.w)-margins.left-margins.right-xscale(0.2);
 					})
 			ixs.select("g.info text")
 					.attr("x",function(d,i){
 						return xscale(d.x)+xscale(0.2);
 					})
-					.html(function(d,i){
+					.text(function(d,i){
 
 						var y=(data.table.y-d.y),
 							measures={
 								x:" cm",
 								y:" m",
-								deg:"&deg;",
+								deg:"\u00B0",
 								t:" seconds"
 							}
 						if(y<1) {
@@ -761,9 +777,16 @@
 							measures.y=" cm";
 						}
 
+						if(i==0) {
+							var hangout=d3.format(",.1f")((data.toast.a/2+data.toast.r)*100)+"cm";
+							return "The toast is in its initial position hanging out "+hangout;
+						}
+
 						if(d.table) {
 							return "The toast has not left the table yet after rotating by "+d3.format(",.2f")(d.deg)+measures.deg;
 						}
+
+
 
 						if(i==current_statuses.length-1) {
 							return "After falling for "+d3.format(",.2f")(d.t)+measures.t+" the toast lands butter-side "+(d.rad>0?"down":"up");
