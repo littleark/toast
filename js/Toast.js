@@ -8,9 +8,32 @@
 		var data={
 				table:{
 					x:0,
-					y:0.76, //table height m
+					y:0.75, //table height m
 					w:0.6, //table width
-					h:0.04 //table thickness
+					h:0.04, //table thickness
+					default_height:2, //dining table
+					heights: [
+						{
+							name:"Coffee Table",
+							y:0.45
+						},
+						{
+							name:"Bar Table",
+							y:0.65
+						},
+						{
+							name:"Dining Table",
+							y:0.75
+						},
+						{
+							name:"Console Table",
+							y:0.90
+						},
+						{
+							name:"Poseur Table",
+							y:1.10
+						}
+					]
 				},
 				physics:{
 					g:9.81, // gravity acceleration
@@ -291,51 +314,18 @@
   		var defs=svg.append("defs")
   		defs.html("");
 
-  		/*defs
+		defs
 			.append("linearGradient")
-				.attr("id","mugGradient")
+				.attr("id","tableEdge")
 				.selectAll("stop")
 					.data([
-						{
-							offset:"0%",
-							stopColor:"#aa0000"
-							//stopColor:"#EDD79D"
-						},
 						{
 							offset:"50%",
-							stopColor:"#ff1100"
-							//stopColor:"#C79637"
+							stopColor:"#fff"
 						},
 						{
 							offset:"100%",
-							stopColor:"#aa0000"
-							//stopColor:"#C79637"
-						}
-				])
-					.enter()
-					.append("stop")
-						.attr("offset",function(d){
-							return d.offset;
-						})
-						.attr("stop-color",function(d){
-							return d.stopColor;
-						})*/
-
-
-  		defs
-			.append("radialGradient")
-				.attr("id","toastGradient")
-				.selectAll("stop")
-					.data([
-						{
-							offset:"5%",
-							stopColor:"#C79637"
-							//stopColor:"#EDD79D"
-						},
-						{
-							offset:"100%",
-							stopColor:"#EDD79D"
-							//stopColor:"#C79637"
+							stopColor:"#ddd"
 					}
 				])
 					.enter()
@@ -347,70 +337,6 @@
 							return d.stopColor;
 						})
 
-		defs
-			.append("linearGradient")
-				.attr("id","tableBottomGradient")
-				.selectAll("stop")
-					.data([
-						{
-							offset:"96%",
-							stopColor:"#C9A533"
-							//stopColor:"#EDD79D"
-						},
-						{
-							offset:"100%",
-							stopColor:"#A27D2D"
-							//stopColor:"#C79637"
-					}
-				])
-					.enter()
-					.append("stop")
-						.attr("offset",function(d){
-							return d.offset;
-						})
-						.attr("stop-color",function(d){
-							return d.stopColor;
-						})
-
-		defs
-			.append("linearGradient")
-				.attr("id","tableShadowGradient")
-				.attr({
-					x1:"0",
-					x2:"0",
-					y1:"0",
-					y2:"1"
-				})
-				.selectAll("stop")
-					.data([
-						{
-							offset:"0%",
-							stopColor:"#000",
-							stopOpacity:0.3
-						},
-						{
-							offset:"100%",
-							stopColor:"#000",
-							stopOpacity:0.0
-					}
-				])
-					.enter()
-					.append("stop")
-						.attr("offset",function(d){
-							return d.offset;
-						})
-						.attr("stop-color",function(d){
-							return d.stopColor;
-						})
-						.attr("stop-opacity",function(d){
-							return d.stopOpacity;
-						})
-
-		/*var xscale=d3.scale.linear().domain([0,1*2]).range([0,WIDTH-(margins.left+margins.right)]),
-			yscale=d3.scale.linear().domain([0,data.table.y*FACTOR]).range([HEIGHT-(margins.top+margins.bottom)+BIG_TOAST_HEIGHT,BIG_TOAST_HEIGHT]),
-			hscale=d3.scale.linear().domain([0,data.table.y*FACTOR]).range([0,HEIGHT-(margins.top+margins.bottom)]);*/
-
-		//HEIGHT=window.innerHeight - BIG_TOAST_HEIGHT - 20;
 		var xscale=d3.scale.linear().domain([0,data.table.y*FACTOR_X]).range([0,WIDTH-(margins.left+margins.right)]),
 			yscale=d3.scale.linear().domain([0,data.table.y*1]).range([HEIGHT-(margins.top+margins.bottom)+BIG_TOAST_HEIGHT,BIG_TOAST_HEIGHT]),
 			hscale=d3.scale.linear().domain([0,data.table.y*1]).range([0,HEIGHT-(margins.top+margins.bottom)]);
@@ -418,16 +344,10 @@
 		var xscale2=xscale.copy();//.domain([0,0.75*2]);
 
 		
-		var bigToast=new BigToast({
-			container:svg,
-			id:"bigToast"
+		
+		var axis=new Axis({
+			container:svg
 		})
-
-		var cup=new Cup({
-			container:svg,
-			id:"cup"
-		})
-
 					
 		
 		var world=svg.append("g")
@@ -443,21 +363,25 @@
 
 						return "translate("+x+","+y+")";
 					});
-		/*var mug=world.append("g")
-					.attr("id","mug")
-					.attr("transform",function(){
 
-						var x=xscale(data.table.w/4),
-							y=yscale(data.table.y)-(50+TABLE_STROKE);
+		var bigToast=new BigToast({
+			container:svg,
+			id:"bigToast"
+		})
 
-						return "translate("+x+","+y+")";
-					});
-		mug.append("path")
-			.attr("d","m 0.5,1.8621826 c 0,0 0,50.0000004 24.080244,50.0000004 l 10.785949,0 5.267546,0 10.78596,0 c 24.080243,0 24.080243,-50.0000004 24.080243,-50.0000004 0.07572,0.1300329 -74.999942,0 -74.999942,0 z")
-			.attr("fill","url(#mugGradient)")
-			.style("fill","url(#mugGradient)")
-			.style("stroke","#333")
-			.style("stroke-width","2")*/
+		var cup=new Cup({
+			container:svg,
+			id:"cup"
+		})
+
+		table.append("rect")
+				.attr("class","tableEdge")
+				.attr("x",0)
+				.attr("y",-BIG_TOAST_HEIGHT)
+				.attr("width",xscale(data.table.w))
+				.attr("height",BIG_TOAST_HEIGHT)
+
+		
 		
 		table.append("rect")
 				.attr("class","top")
@@ -484,7 +408,25 @@
 				.attr("y",hscale(data.table.h)-TABLE_STROKE/2)
 				.attr("width",xscale(0.07))
 				.attr("height",hscale(data.table.y - data.table.h))
-				
+		
+		/*table.append("line")
+				.attr("class","tableEdge")
+				.attr("x1",xscale(data.table.w-0.08-0.07-0.04))
+				.attr("x2",xscale(data.table.w-0.08-0.07-0.04))
+				.attr("y1",hscale(data.table.y*2/3))
+				.attr("y2",hscale(data.table.y)-20)
+
+		table.append("circle")
+				.attr("class","tableEdge")
+				.attr("cx",xscale(data.table.w-0.08-0.07-0.04))
+				.attr("cy",hscale(data.table.y*2/3)-4)
+				.attr("r",1.5)
+
+		table.append("circle")
+				.attr("class","tableEdge")
+				.attr("cx",xscale(data.table.w-0.08-0.07-0.04))
+				.attr("cy",hscale(data.table.y*2/3)-10)
+				.attr("r",1.5)*/
 
 		/*table.append("rect")
 				.attr("class","shadow")
@@ -502,24 +444,18 @@
 			return d3.round(value*100,0)+"cm";
 		}
 
-		table.append("text")
+		/*table.append("text")
 				.attr("class","info")
-				.attr("x",xscale(data.table.w-0.05-0.05)-15)
-				.attr("y",hscale(data.table.h*5+(data.table.y-data.table.h*5)/2))
-				.text(heightFormat(data.table.y))
+				.attr("x",xscale(data.table.w-0.08-0.07-0.04))
+				//.attr("y",hscale(data.table.h*5+(data.table.y-data.table.h*5)/2))
+				.attr("y",hscale(data.table.y)-5)
+				.text(heightFormat(data.table.y))*/
 
 
 		var floor=world.append("g")
 					.attr("id","floor")
 					.attr("transform","translate(0,"+(BIG_TOAST_HEIGHT+hscale(data.table.y))+")")
 					
-		/*floor.append("rect")
-			.attr("x",0)
-			.attr("y",0)
-			.attr("width",xscale.range()[1])
-			.attr("height",3)*/
-
-		
 
 		var toast=world.append("g")
 					.attr("id","toast");
@@ -546,14 +482,14 @@
 
 		//AXIS
 
-		var xAxis = d3.svg.axis().scale(xscale).orient("top");
-		var yAxis = d3.svg.axis().scale(yscale).orient("right");
+		//var xAxis = d3.svg.axis().scale(xscale).orient("top");
+		//var yAxis = d3.svg.axis().scale(yscale).orient("right");
 
-		var axes=svg.append("g")
-						.attr("id","axes")
-						.attr("transform","translate("+margins.left+","+margins.top+")")
+		
 
-		axes.append("g")
+		
+
+		/*axes.append("g")
 	      .attr("class", "x axis")
 	      .attr("transform", "translate(0,0)")
 	      .call(xAxis)
@@ -561,7 +497,7 @@
 	   	axes.append("g")
 	      .attr("class", "y axis")
 	      .attr("transform", "translate("+(WIDTH-(margins.left+margins.right))+",0)")
-	      .call(yAxis)
+	      .call(yAxis)*/
 
 	    function updateSVGHeight() {
 	    	/*var BIG_TOAST_HEIGHT=200;
@@ -638,10 +574,10 @@
 							update();
 						})
 
-			axes.selectAll(".y.axis")
+			/*axes.selectAll(".y.axis")
 				.transition()
 				.duration(DURATION)
-					.call(yAxis);
+					.call(yAxis);*/
 			
 			floor
 				.transition()
@@ -651,19 +587,13 @@
 					.attr("transform","translate(0,"+(BIG_TOAST_HEIGHT+hscale(data.table.y))+")")
 					.each("end",function(){
 						update();
+						axis.update();
 					})
 			
 			
 
 	    }
-
-	    function update() {
-	    	//data.end=calculateTimeAngle();
-	    	//calculateAllPositions();
-
-	    	calculateStatuses();
-	    	data.end=data.statuses[data.statuses.length-1].deg;
-			
+	    function updateSentence() {
 	    	sentence.setValue("#breadSize",(data.toast.a*100)+"cm");
 	    	sentence.setValue("#breadOut",((data.toast.r+data.toast.a/2)*100)+"cm");
 	    	sentence.setValue("#tableHeight",(data.table.y<1)?d3.round(data.table.y*100,0)+"cm":d3.round(data.table.y,2)+"m");
@@ -676,6 +606,17 @@
 			}
 			
 	    	sentence.setValue("#breadStatus",(cos(data.statuses[data.statuses.length-1].rad)>0)?"up":"down");
+	    }
+	    function update() {
+	    	//data.end=calculateTimeAngle();
+	    	//calculateAllPositions();
+
+	    	var  last_status=data.statuses[data.statuses.length-1];
+
+	    	calculateStatuses();
+	    	data.end=data.statuses[data.statuses.length-1].deg;
+			
+	    	updateSentence();
 
 			console.log("UPDATE DATA:",data)	    	
 
@@ -726,11 +667,20 @@
 
 			new_ixs
 				.attr("transform",function(d,i){
-					var x=xscale(data.table.w+d.x),
+					var x=xscale(data.table.w),
 						y=yscale(d.y);
 					return "translate("+(x)+","+y+")"
 				})
 				
+			var ixs_info=new_ixs.append("g")
+							.attr("class","info")
+
+			ixs_info.append("line")
+						.attr("x1",function(d){
+							return xscale(d.x);
+						})
+						.attr("y1",0)
+						.attr("y2",0)
 
 			new_ixs.append("rect")
 				.attr("x",function(d){
@@ -747,6 +697,17 @@
 
 			var g=new_toasts.append("g")
 					.attr("class","t")
+					.attr("transform",function(d){
+						if(!last_status) {
+							return "";
+						}
+						if(d.table) {
+							dx=dy=0;
+							return "rotate("+last_status.deg+","+(dx)+","+(-dy)+")";	
+						}
+						return "rotate("+last_status.deg+")";	
+						
+					})
 
 			g.append("rect")
 					.attr("x",-xscale(data.toast.a/2))
@@ -838,7 +799,7 @@
 
 
 
-					var TAIL=20;
+					var TAIL=15;
 					toasts
 						.filter(function(t){
 							return t.p > d.p-TAIL && t.p < d.p;
@@ -862,6 +823,13 @@
 							}
 							return hscale(data.toast.a/2);
 						})
+			ixs.select("g.info line")
+					.attr("x1",function(d){
+						return xscale(d.x);
+					})
+					.attr("x2",function(d){
+						return xscale.range()[1];
+					})
 
 			toasts
 				.selectAll("path.arrow,rect")
@@ -959,21 +927,6 @@
 				})
 				.select("text")
 					.html(d3.round(data.statuses[data.statuses.length-1].deg,3)+"&deg;");
-
-			
-			/*bigToast.attr("transform","translate("+(margins.left+xscale(data.table.w+data.toast.r))+","+(BIG_TOAST_HEIGHT - xscale2(data.toast.a/2) - BIGTOAST_DIST)+")");
-
-			bigToast.select("rect.bread")
-						.attr("x",-xscale2(data.toast.a)/2)
-						.attr("y",-xscale2(data.toast.a)/2)
-						.attr("width",xscale2(data.toast.a))
-						.attr("height",xscale2(data.toast.a))
-
-			bigToast.select("rect.butter")
-					.attr("x",-xscale2(data.toast.a/2-0.01))
-					.attr("y",-xscale2(data.toast.a/2-0.01))
-					.attr("width",xscale2(data.toast.a-0.02))
-					.attr("height",xscale2(data.toast.a-0.02))*/
 			
 			bigToast.update();
 
@@ -1200,12 +1153,12 @@
 		};
 
 function Cup(options) {
-	var smoke_small_path="m 0,0 c -7.9853091,4.18678 -16.235929,9.63543 -14.637579,19.743246 1.73425,10.93612 10.72905,18.55258 0.88654,28.809245 -1.26833,1.3201 1.79896,1.22951 2.50431,0.49827 5.9533899,-6.205765 6.45813,-12.295045 3.3908399,-20.150935 -1.48187,-3.79205 -3.2420099,-7.35762 -3.8891099,-11.42145 C -13.065099,9.1501 -4.257969,4.14149 1.92838,0.89948 z";
-	var smoke_path="m 0,0 c -10.786925,5.961939 -18.773888,13.377597 -16.318971,26.506308 2.896122,15.459185 16.273719,28.305072 4.12358,43.47012 -0.757969,0.944633 1.996741,0.729687 2.539764,0.05091 C 10.147742,45.319793 -34.402767,20.736691 1.69129,0.797567 3.30339,-0.096159 0.876756,-0.4808 0,2e-6 z";
+	var smoke_small_path="m 0,0 c -7.9853091,4.18678 -16.235929,9.63543 -14.637579,19.743246 1.73425,10.93612 10.72905,18.55258 0.88654,28.809245 -1.26833,1.3201 1.79896,1.22951 2.50431,0.49827 5.9533899,-6.205765 6.45813,-12.295045 3.3908399,-20.150935 -1.48187,-3.79205 -3.2420099,-7.35762 -3.8891099,-11.42145 C -13.065099,9.1501 -4.257969,4.14149 1.92838,0.89948 z"; //17.8x50.6
+	var smoke_path="m 0,0 c -10.786925,5.961939 -18.773888,13.377597 -16.318971,26.506308 2.896122,15.459185 16.273719,28.305072 4.12358,43.47012 -0.757969,0.944633 1.996741,0.729687 2.539764,0.05091 C 10.147742,45.319793 -34.402767,20.736691 1.69129,0.797567 3.30339,-0.096159 0.876756,-0.4808 0,2e-6 z"; //20x72
 
-	var cup_path="m 0,0 c 0,0 -2.86729498,98.77329823 18.43259352,98.77329823 21.299883,0 23.347938,0 23.347938,0 l 4.431732,0 c 0,0 -4.09613,0 17.203748,0 21.299881,0 18.432589,-98.77329823 18.432589,-98.77329823 z";
+	var cup_path="m 0,0 c 0,0 -2.86729498,98.77329823 18.43259352,98.77329823 21.299883,0 23.347938,0 23.347938,0 l 4.431732,0 c 0,0 -4.09613,0 17.203748,0 21.299881,0 18.432589,-98.77329823 18.432589,-98.77329823 z"; // 83.1x99.7
 
-	var size_cm=xscale.invert(110);
+	var size_cm=xscale.invert(100);
 
 	var x=margins.left+xscale(0.1),
 		y=BIG_TOAST_HEIGHT-(100*data.toast.a/size_cm);
@@ -1219,23 +1172,76 @@ function Cup(options) {
 	cup.append("path")
 		.attr("d",cup_path)
 		
-
+	var step=83/6;
 	cup.append("path")
 		.attr("d",smoke_small_path)
-		.attr("transform","translate("+xscale(0.06)+","+(-xscale(0.12))+")")
+		.attr("transform","translate("+(step+17.8/2)+","+(-60)+")")
 		
 
 	cup.append("path")
 		.attr("d",smoke_small_path)
-		.attr("transform","translate("+xscale(0.18)+","+(-xscale(0.12))+")")
+		.attr("transform","translate("+(step*5+17.8/2)+","+(-60)+")")
 		
 
 	cup.append("path")
 		.attr("d",smoke_path)
-		.attr("transform","translate("+xscale(0.12)+","+(-xscale(0.17))+")")
+		.attr("transform","translate("+(step*3+20/2)+","+(-82)+")")
 		
 }
+function Axis(options) {
+	
+	var x=xscale(data.table.w+0.4),
+    	y=BIG_TOAST_HEIGHT- BIGTOAST_DIST;
 
+	var yAxis = d3.svg.axis()
+						.scale(yscale)
+						//.tickSize(width)
+				    	.tickFormat(function(d){
+				    		var value=data.table.y - d;
+				    		return d3.round(value*100,2)+"cm";
+				    	})
+				    	.tickValues(function(){
+				    		var values=[0];
+
+				    		var delta=data.table.y%0.1;
+
+				    		for(var y=0;y<data.table.y;y+=0.1) {
+				    			values.push(y+delta)
+				    		}
+				    		console.log("VALUES",values)
+				    		return values;
+				    	})
+				    	//.ticks([0,0.4,0.75])
+						.orient("left");
+
+	var axes=options.container.append("g")
+					.attr("id","axes")
+					.attr("transform","translate("+(WIDTH-(margins.left+1))+","+0+")")
+
+   	axes.append("g")
+      .attr("class", "y axis")
+      //.attr("transform", "translate("+0+",0)")
+      .call(yAxis)
+
+    this.update=function(){
+    	yAxis.scale(yscale)
+				    	.tickValues(function(){
+				    		var values=[0];
+
+				    		var delta=data.table.y%0.1;
+
+				    		for(var y=0;y<data.table.y;y+=0.1) {
+				    			values.push(y+delta)
+				    		}
+				    		console.log("VALUES",values)
+				    		return values;
+				    	});
+		axes.select("g.y")
+			.call(yAxis)
+
+    }
+
+}
 function BigToast(options) {
 
 	
@@ -1243,7 +1249,7 @@ function BigToast(options) {
 	var d="m 95.161829,98.60232 c -22.408255,1.0226 -70.826949,2.5533 -90.8720704,0 C 1.0196925,78.79162 -0.00539653,61.02592 0.55664608,45.31811 0.76421863,39.49512 4.5324588,34.07612 4.2897586,29.57554 4.0757992,25.57677 -1.8000995,21.6001 0.55664608,16.25369 c 9.95709592,-22.5818098 90.87207092,-20.7418098 98.33829592,0 1.900088,5.27698 -3.64689,10.40247 -3.733113,13.32185 -0.105383,3.55375 3.270066,8.39204 3.733113,12.10991 2.187498,17.64567 1.219888,38.67157 -3.733113,56.91687 z";
 
 	var size_cm=xscale.invert(100);
-	var SIZE_FACTOR=2;
+	var SIZE_FACTOR=1.6;
 	var bigToastScale=xscale.copy().domain([0,xscale.domain()[1]*(1/SIZE_FACTOR)]);
 
 	var size=bigToastScale(data.toast.a);
@@ -1310,12 +1316,31 @@ function BigToast(options) {
 	bigToast.append("line")
 			.attr("class","left lens")
 			
-				
-
 	bigToast.append("line")
 			.attr("class","right lens")
 			
+	var size=bigToast.append("g")
+			.attr("class","size")
+			.attr("transform",function(d){
+				return "translate(200,0)"
+			})
 
+	size.append("path")
+			.attr("class","bread-size")
+
+	size.append("rect")
+	size.append("text")
+			.attr("class","bread-size")
+			.attr("x",0)
+			.attr("y",0);
+
+	size.append("text")
+			.attr("class","hangout")
+			.attr("x",0)
+			.attr("y",0);
+
+	size.append("path")
+			.attr("class","hangout")
 	
 	this.update=function() {
 		var old_bigToastScale_size=bigToastScale.domain()[1];
@@ -1329,8 +1354,46 @@ function BigToast(options) {
 		bigToast.attr("transform","translate("+(x)+","+(y)+")");
 
 		toast.attr("transform","translate("+(-bigToastScale(data.toast.a/2))+","+(-bigToastScale(data.toast.a))+") scale("+(SIZE_FACTOR*(data.toast.a/size_cm))+")")
-		//toast.select("path")
-		//	.attr("transform","scale("+(data.toast.a/size_cm)+")")
+		
+		size.attr("transform",function(d){
+				return "translate("+(-bigToastScale(data.toast.a/2))+",0)"
+			})
+		var bread_size=bigToastScale(data.toast.a),
+			hangout=bigToastScale(data.toast.a/2+data.toast.r/SIZE_FACTOR);
+
+		size.select("path.bread-size")
+				/*.attr("x1",0)
+				.attr("x2",bread_size)
+				.attr("y1",-bread_size-5)
+				.attr("y2",-bread_size-5)*/
+				.attr("d",function(d){
+					var y=bigToastScale(data.toast.a);
+					return "m0,"+(-y)+" l0,-5 l"+(y)+",0 l0,5";
+				})
+		size.select("path.hangout")
+				/*.attr("x1",bread_size-hangout)
+				.attr("x2",bread_size)
+				.attr("y1",5)
+				.attr("y2",5)*/
+				.attr("d",function(d){
+					var w=bigToastScale(data.toast.a),
+						hangout=bigToastScale(data.toast.a/2+data.toast.r/SIZE_FACTOR);
+					return "m"+(w-hangout)+","+(5)+" l0,5 l"+(hangout)+",0 l0,-5";
+				})
+
+		size.select("text.bread-size")
+				.attr("x",bigToastScale(data.toast.a/2))
+				.attr("y",-(bigToastScale(data.toast.a)+10))
+				.text(Math.round(data.toast.a*100)+"cm")
+
+		size.select("text.hangout")
+				.attr("x",function(d){
+					var w=bigToastScale(data.toast.a),
+						hangout=bigToastScale(data.toast.a/2+data.toast.r/SIZE_FACTOR);
+					return (w-hangout + (w-hangout+hangout))/2
+				})
+				.attr("y",25)
+				.text(d3.format(",.1f")((data.toast.a/2+data.toast.r)*100)+"cm")
 
 		bigToast.select("line.left")
 			.attr("y1",0)
@@ -1344,6 +1407,15 @@ function BigToast(options) {
 			.attr("y2",BIGTOAST_DIST-hscale(data.toast.h))
 			.attr("x1",bigToastScale(data.toast.a/2))
 			.attr("x2",xscale(data.toast.a/2)+2)
+	}
+
+}
+
+function Sentence() {
+
+
+	this.update=function() {
+		
 	}
 
 }

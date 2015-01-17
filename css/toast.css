@@ -45,7 +45,7 @@ h4 {
 }
 #toast svg text {
 	font-family: Georgia,serif;
-	font-size: 14px;
+	font-size: 13px;
 	fill:#333;
 }
 #toast svg g#bigToast rect.bread {
@@ -65,24 +65,46 @@ h4 {
 	stroke-linecap: round;
 }
 #toast svg g#bigToast line.lens {
+	stroke:#ddd;
+	stroke-width:1;
+	/*stroke-dasharray: 1 4;*/
+}
+#toast svg g#bigToast g.size path {
+	fill:none;
+	shape-rendering: crispEdges;
 	stroke:#aaa;
-	stroke-width:2;
-	stroke-dasharray: 2 2;
+	stroke-width:1;
+}
+#toast svg g#bigToast g.size rect {
+	fill:#fff;
+	shape-rendering: crispEdges;
+	stroke:none;
+}
+#toast svg g#bigToast g.size text {
+	text-anchor:middle;
+	fill:#aaa;
+}
+#toast svg g#bigToast:hover g.size path {
+	stroke:#333;
+}
+#toast svg g#bigToast:hover g.size text {
+	fill:#333;
 }
 #toast svg g#cup path {
 	fill:#000;
 	stroke:none;
 }
 #toast svg g#table rect {
-	fill:#000 !important;
-	stroke:#fff !important;
+	fill:#000;
+	stroke:#fff;
 }
 #toast svg g#table rect {
-	stroke:#B09146;
-	fill:#E6C26D;
+	/*stroke:#B09146;
+	fill:#E6C26D;*/
 	stroke-width:2;
 	shape-rendering: crispEdges;
 }
+/*
 #toast svg g#table rect.bottom {
 	fill:url(#tableBottomGradient);
 }
@@ -92,10 +114,21 @@ h4 {
 #toast svg g#table rect.shadow {
 	stroke:none;
 	fill:url(#tableShadowGradient);
-	/*fill-opacity:0.3;*/
+}*/
+#toast svg g#table rect.tableEdge {
+	stroke:none;
+	fill:#ddd;
+	fill:url(#tableEdge);
+	fill-opacity:0.4;
 }
+#toast svg g#table line.tableEdge {
+	stroke:#aaa;
+	shape-rendering: crispEdges;
+	/*stroke-dasharray: 4,4;*/
+}
+
 #toast svg g#table text.info {
-	text-anchor:end;
+	text-anchor:middle;
 }
 #toast #table line.dropline {
 	stroke:#aaa;
@@ -104,13 +137,13 @@ h4 {
 	shape-rendering: crispEdges;
 	stroke-dasharray: 2,2;
 }
-;
+
 #toast g.angle text {
 	fill:#555;
 	font-size:12px;
 }
 #toast #axes .axis {
-	display: none;
+	
 }
 #toast #axes .axis path {
 	stroke:#999;
@@ -126,7 +159,7 @@ h4 {
 }
 #toast #axes .axis .tick text{
 	font-size: 10px;
-	fill:#aaa;
+	fill:#777;
 }
 #toast .toast {
 	opacity: 1;
@@ -150,7 +183,18 @@ h4 {
 }
 .ix rect {
 	fill:#000;
-	fill-opacity:0 !important;
+	fill-opacity:0.1 !important;
+}
+.ix g.info {
+	display: none;
+}
+.ix:hover g.info {
+	display: block;
+}
+.ix g.info line {
+	stroke:#000;
+	stroke-width:1;
+	shape-rendering: crispEdges;
 }
 #toast .toast path.arrow {
 	fill-opacity:0;
@@ -169,7 +213,7 @@ h4 {
 	fill-opacity:1;
 }
 #toast .toast line.butter {
-	stroke:#ddd;
+	stroke:#FBBD04;
 	stroke-width:2;
 	stroke-opacity:0;
 	fill:none;
@@ -197,6 +241,6 @@ h4 {
 }*/
 #toast .toast:hover line.butter,
 #toast .toast.visible line.butter {
-	stroke: #ddd;
+	stroke: #FBBD04;
 	stroke-opacity:1;
 }
