@@ -181,7 +181,7 @@
 
 				var b=data.toast.a/2 * Math.sin(alpha);
 
-				console.log(h-yC,">",b)
+				//console.log(h-yC,">",b)
 				
 				//hi=phi%(Math.PI*2)
 				//if (h-yC >= data.toast.a/2) {
@@ -258,6 +258,13 @@
 			sentence:"#sentence"
 		})
 
+		var w = window,
+		    d = document,
+		    e = d.documentElement,
+		    g = d.getElementsByTagName('body')[0],
+		    __width = w.innerWidth || e.clientWidth || g.clientWidth,
+		    __height = w.innerHeight|| e.clientHeight|| g.clientHeight;
+
 		var margins={
 			top:0,
 			bottom:10,
@@ -268,19 +275,14 @@
 		var BIG_TOAST_HEIGHT=260,
 			BIGTOAST_DIST=80;
 
-		var WIDTH=500,
-			HEIGHT=Math.min((window.innerHeight || window.clientHeight)-BIG_TOAST_HEIGHT-60,500);
-
-		WIDTH=WIDTH*2;
-
-		WIDTH=window.innerWidth-40;
-		
-
-		HEIGHT=window.innerHeight - BIG_TOAST_HEIGHT - 60;
-		
-
-
-		WIDTH=window.innerWidth-40;
+		var MIN_HEIGHT=400,
+			WIDTH=__width,
+			HEIGHT=Math.max(__height - BIG_TOAST_HEIGHT - 60, MIN_HEIGHT- BIG_TOAST_HEIGHT - 60);
+			
+			if(__width<__height) {
+				HEIGHT=Math.min(HEIGHT,__height*0.75- BIG_TOAST_HEIGHT - 60)	
+			}
+			
 
 		var FACTOR_X=WIDTH/HEIGHT;
 
@@ -407,7 +409,7 @@
 		floor.append("rect")
 				.attr("x",0)
 				.attr("y",0)
-				.attr("width",WIDTH+100)
+				.attr("width",WIDTH)
 				.attr("height",margins.bottom)
 
 		var toast=world.append("g")
@@ -430,6 +432,23 @@
 						.html(d3.round(data.statuses[data.statuses.length-1].deg,3)+"&deg;")*/
 
 		update();
+
+		function resize() {
+			
+			__width = w.innerWidth || e.clientWidth || g.clientWidth;
+
+			WIDTH=__width;
+
+			svg.attr("width",WIDTH);
+
+			floor.select("rect")
+				.attr("width",WIDTH);
+
+			axis.update();
+
+		}
+
+		d3.select(window).on('resize', resize);
 
 	    function updateSVGHeight() {
 
@@ -472,8 +491,6 @@
 			floor
 				.transition()
 				.duration(DURATION)
-					//.attr("transform","translate(0,"+yscale.range()[0]+")")
-					//.attr("transform","translate(0,"+hscale(data.table.y)+")")
 					.attr("transform","translate(0,"+(BIG_TOAST_HEIGHT+hscale(data.table.y))+")")
 					.each("end",function(){
 						update();
@@ -752,7 +769,7 @@
 							return "After falling for "+d3.format(",.2f")(d.t)+measures.t+" the toast lands butter-side "+(d.rad>0?"down":"up");
 						}
 
-						return "After "+d3.format(",.2f")(d.t)+measures.t+" the toast has rotated by "+d3.format(",.2f")(d.deg)+measures.deg
+						return "After falling for "+d3.format(",.2f")(y)+measures.y+" in "+d3.format(",.2f")(d.t)+measures.t+" the toast has rotated by "+d3.format(",.2f")(d.deg)+measures.deg
 
 						return "x:"+d3.format(",.2f")(d.x*100)+measures.x+" y:"+d3.format(",.2f")(y)+measures.y+" deg:"+d3.format(",.2f")(d.deg)+measures.deg+" time:"+d3.format(",.2f")(d.t)+measures.t;
 					})
@@ -1030,7 +1047,7 @@
 		}
 		
 		
-
+		
 	    var gui = new dat.GUI();
 
 		var controllers={
@@ -1069,7 +1086,8 @@
 
 		controllers["dt"].onFinishChange(function(value) {
 			update();
-		});		
+		});
+			
 
 		d3.selection.prototype.moveToFront = function() {
 		  return this.each(function(){
@@ -1141,7 +1159,7 @@ function Axis(options) {
 
 	var axes=options.container.append("g")
 					.attr("id","axes")
-					.attr("transform","translate("+(WIDTH-(margins.left+1))+","+0+")")
+					.attr("transform","translate("+(WIDTH-(margins.left+margins.right))+","+0+")")
 
    	axes.append("g")
       .attr("class", "y axis")
@@ -1161,6 +1179,9 @@ function Axis(options) {
 				    		console.log("VALUES",values)
 				    		return values;
 				    	});
+
+		axes.attr("transform","translate("+(WIDTH-(margins.left+margins.right))+","+0+")")
+
 		axes.select("g.y")
 			.call(yAxis)
 
