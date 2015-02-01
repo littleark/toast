@@ -1,18 +1,20 @@
 body {
-  	background-color: #000;
-  	font-family: Georgia;
+  	background-color: #f4f4f4;
+  	font-family: 'Lato', sans-serif;
   	font-size:16px;
-  	color:#eee;
+  	font-weight: 300;
+  	color:#333;
   	overflow-x:hidden;
+
 }
 .hidden {
 	display: none;
 }
 h1,h2,h3,h4,h5 {
-	/*font-family: 'Roboto Slab', serif;*/
-	font-family: 'Rozha One', serif;
+	
+
 	letter-spacing: 0.05em;
-	font-weight: 700;
+	font-weight: 300;
 }
 h4 {
 	font-weight: 300;
@@ -27,7 +29,7 @@ h4 {
 }
 #fold .sentence-col {
 	position: absolute;
-	right: 0;
+	right: 10%;
 	top:0;
 }
 #fold p.sentence {
@@ -49,7 +51,7 @@ h4 {
 	
 }
 #toast svg text {
-	font-family: Georgia,serif;
+	
 	font-size: 13px;
 	fill:#333;
 }
@@ -166,6 +168,10 @@ h4 {
 	font-size: 10px;
 	fill:#777;
 }
+#toast #axes .axis .tick.last text{
+	font-size: 20px;
+	fill:#333;
+}
 #toast .toast {
 	opacity: 1;
 }
@@ -185,6 +191,15 @@ h4 {
 	fill:#000;
 	fill-opacity:0;
 	stroke:none;
+}
+#toast #world #floor rect {
+	fill:#f4f4f4;
+}
+#toast #world #floor line {
+	stroke:#aaa;
+	stroke-width:1;
+	shape-rendering: crispEdges;
+
 }
 .ix rect {
 	fill:#000;

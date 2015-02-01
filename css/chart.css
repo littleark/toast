@@ -4,7 +4,7 @@
 }
 .chart .series path {
 	fill:none;
-	stroke:#E8FF38;
+	stroke:#000;
 	stroke-width:1px;
 }
 .chart .series path.bg {
@@ -31,13 +31,14 @@
 .chart .axis line {
 	shape-rendering:crispEdges;
 	fill:none;
-	stroke:#ddd;
+	stroke:#999;
 }
 
 .chart .axis .tick line {
-	stroke:#ddd;
+	stroke:#999;
 }
 .chart .axis .tick text{
 	font-size: 10px;
-	fill:#aaa;
+	fill:#111;
 }
+

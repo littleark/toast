@@ -277,7 +277,7 @@
 
 		var MIN_HEIGHT=400,
 			WIDTH=__width,
-			HEIGHT=Math.max(__height - BIG_TOAST_HEIGHT - 60, MIN_HEIGHT- BIG_TOAST_HEIGHT - 60);
+			HEIGHT=d3.max([__height - BIG_TOAST_HEIGHT - 60, MIN_HEIGHT- BIG_TOAST_HEIGHT - 60,300]);
 			
 			if(__width<__height) {
 				HEIGHT=Math.min(HEIGHT,__height*0.75- BIG_TOAST_HEIGHT - 60)	
@@ -327,14 +327,16 @@
 
 		
 		
-		var axis=new Axis({
-			container:svg
-		})
+		
 					
 		
 		var world=svg.append("g")
 						.attr("id","world")
 						.attr("transform","translate("+margins.left+","+margins.top+")")
+
+		var axis=new Axis({
+			container:svg
+		})
 
 		var table=world.append("g")
 					.attr("id","table")
@@ -411,6 +413,10 @@
 				.attr("y",0)
 				.attr("width",WIDTH)
 				.attr("height",margins.bottom)
+		floor.append("line")
+				.attr("x1",0)
+				.attr("y1",0)
+				.attr("x2",WIDTH)
 
 		var toast=world.append("g")
 					.attr("id","toast");
@@ -443,6 +449,8 @@
 
 			floor.select("rect")
 				.attr("width",WIDTH);
+			floor.select("line")
+				.attr("x2",WIDTH)
 
 			ix.selectAll("g.ix")
 				.select("g.info line")
@@ -1159,25 +1167,27 @@ function Axis(options) {
 	var x=xscale(data.table.w+0.4),
     	y=BIG_TOAST_HEIGHT- BIGTOAST_DIST;
 
+    var tickFormat=function(d){
+		var value=data.table.y - d;
+		return d3.round(value*100,2)+" cm";
+	};
+
 	var yAxis = d3.svg.axis()
 						.scale(yscale)
 						//.tickSize(width)
-				    	.tickFormat(function(d){
-				    		var value=data.table.y - d;
-				    		return d3.round(value*100,2)+"cm";
-				    	})
+				    	.tickFormat(tickFormat)
 				    	.tickValues(function(){
 				    		var values=[0];
 
 				    		var delta=data.table.y%0.1;
 
-				    		for(var y=0;y<data.table.y;y+=0.1) {
+				    		for(var y=(delta>=0.05?0:0.1);y<data.table.y;y+=0.1) {
 				    			values.push(y+delta)
 				    		}
 				    		console.log("VALUES",values)
 				    		return values;
 				    	})
-				    	//.ticks([0,0.4,0.75])
+				    	//.ticks([8])
 						.orient("left");
 
 	var axes=options.container.append("g")
@@ -1188,6 +1198,14 @@ function Axis(options) {
       .attr("class", "y axis")
       //.attr("transform", "translate("+0+",0)")
       .call(yAxis)
+      .selectAll(".tick")
+				.classed("last",false)
+				.filter(function(d,i){
+					return i===0;
+				})
+				.classed("last",true)
+				.select("text")
+					.attr("y",-10)
 
     this.update=function(){
     	yAxis.scale(yscale)
@@ -1195,18 +1213,29 @@ function Axis(options) {
 				    		var values=[0];
 
 				    		var delta=data.table.y%0.1;
+				    		console.log("DELTA",delta)
 
-				    		for(var y=0;y<data.table.y;y+=0.1) {
+				    		for(var y=(delta>=0.05?0:0.1);y<data.table.y;y+=0.1) {
 				    			values.push(y+delta)
 				    		}
 				    		console.log("VALUES",values)
 				    		return values;
-				    	});
+				    	})
+						
 
 		axes.attr("transform","translate("+(WIDTH-(margins.left+margins.right))+","+0+")")
 
 		axes.select("g.y")
 			.call(yAxis)
+				.selectAll(".tick")
+					.classed("last",false)
+					.filter(function(d,i){
+						return i===0;
+					})
+					.classed("last",true)
+						.select("text")
+							.attr("y",-10)
+
 
     }
 
