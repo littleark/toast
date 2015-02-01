@@ -25,17 +25,31 @@ h4 {
 }
 #fold h1 {
 	color: #333;
-	font-size:40px;
+	font-size:26px;
 }
 #fold .sentence-col {
 	position: absolute;
-	right: 10%;
+	right: 0;
 	top:0;
 }
 #fold p.sentence {
-	font-size: 20px;
-	font-style: italic;;
+	font-size: 22px;
+	
 	color:#333;
+}
+#fold p.sentence b {
+	font-weight: 900;
+}
+.sentence #landStatus {
+	font-size:22px;
+}
+@media (max-width: 768px) {
+	#fold h1 {
+		font-size: 26px;
+	}
+	#fold p.sentence {
+		font-size:18px;
+	}
 }
 #toast {
 	line-height: 0;
@@ -54,6 +68,14 @@ h4 {
 	
 	font-size: 13px;
 	fill:#333;
+}
+#toast svg g#bigToast,
+#toast svg g#table rect.tableEdge {
+	opacity:1;
+}
+#toast.settings svg g#bigToast,
+#toast.settings svg g#table rect.tableEdge {
+	opacity:1;
 }
 #toast svg g#bigToast rect.bread {
 	stroke:#E5A244;

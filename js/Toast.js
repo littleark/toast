@@ -283,6 +283,7 @@
 				HEIGHT=Math.min(HEIGHT,__height*0.75- BIG_TOAST_HEIGHT - 60)	
 			}
 			
+		
 
 		var FACTOR_X=WIDTH/HEIGHT;
 
@@ -372,7 +373,7 @@
 						.attr("stop-color",function(d){
 							return d.stopColor;
 						})
-						
+
 		var xscale=d3.scale.linear().domain([0,data.table.y*FACTOR_X]).range([0,WIDTH-(margins.left+margins.right)]),
 			yscale=d3.scale.linear().domain([0,data.table.y*1]).range([HEIGHT-(margins.top+margins.bottom)+BIG_TOAST_HEIGHT,BIG_TOAST_HEIGHT]),
 			hscale=d3.scale.linear().domain([0,data.table.y*1]).range([0,HEIGHT-(margins.top+margins.bottom)]);
