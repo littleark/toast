@@ -30,7 +30,7 @@ h4 {
 #fold .sentence-col {
 	position: absolute;
 	right: 0;
-	top:0;
+	top:40px;
 }
 #fold p.sentence {
 	font-size: 22px;
