@@ -267,7 +267,7 @@
 
 		var margins={
 			top:0,
-			bottom:10,
+			bottom:20,
 			left:0,
 			right:30
 		}
@@ -295,7 +295,61 @@
 
   		var defs=svg.append("defs")
   		defs.html("");
+  		var defs=svg.append("defs")
+				.append("pattern")
+					.attr({
+						id:"diagonalHatch",
+						width:5,
+						height:5,
+						patternTransform:"rotate(45 0 0)",
+						patternUnits:"userSpaceOnUse"
+					});
 
+		defs.append("line")
+				.attr({
+					x0:0,
+					y1:0,
+					x2:0,
+					y2:5
+				})
+				.style({
+					stroke:"#333",
+					"stroke-opacity":1,
+					"stroke-width":1
+				})
+		defs
+			.append("linearGradient")
+				.attr("id","verticalGradient")
+				.attr({
+					x0:0,
+					y1:0,
+					x2:0,
+					y2:1
+				})
+				.selectAll("stop")
+					.data([
+						{
+							offset:"0%",
+							stopOpacity:0,
+							stopColor:"#f4f4f4"
+						},
+						{
+							offset:"100%",
+							stopOpacity:1,
+							stopColor:"#f4f4f4"
+					}
+				])
+					.enter()
+					.append("stop")
+						.attr("offset",function(d){
+							return d.offset;
+						})
+						.attr("stop-color",function(d){
+							return d.stopColor;
+						})
+						.attr("stop-opacity",function(d){
+							return d.stopOpacity;
+						})
 		defs
 			.append("linearGradient")
 				.attr("id","tableEdge")
@@ -318,7 +372,7 @@
 						.attr("stop-color",function(d){
 							return d.stopColor;
 						})
-
+						
 		var xscale=d3.scale.linear().domain([0,data.table.y*FACTOR_X]).range([0,WIDTH-(margins.left+margins.right)]),
 			yscale=d3.scale.linear().domain([0,data.table.y*1]).range([HEIGHT-(margins.top+margins.bottom)+BIG_TOAST_HEIGHT,BIG_TOAST_HEIGHT]),
 			hscale=d3.scale.linear().domain([0,data.table.y*1]).range([0,HEIGHT-(margins.top+margins.bottom)]);
@@ -413,6 +467,18 @@
 				.attr("y",0)
 				.attr("width",WIDTH)
 				.attr("height",margins.bottom)
+				.style({
+					fill:"url(#diagonalHatch)"
+				})
+		floor.append("rect")
+				.attr("x",0)
+				.attr("y",0)
+				.attr("width",WIDTH)
+				.attr("height",margins.bottom)
+				.style({
+					fill:"url(#verticalGradient)"
+				})
+		
 		floor.append("line")
 				.attr("x1",0)
 				.attr("y1",0)
@@ -1268,7 +1334,7 @@ function BigToast(options) {
 		.append("path")
 		.attr("d",d)
 		//.attr("transform","scale("+(data.toast.a/size_cm)+")")
-		.style("fill","#000")
+		.style("fill","#111")
 
 	/*toast.append("circle")
 			.attr("cx",0)
