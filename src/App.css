@@ -1,0 +1,166 @@
+body {
+  	background-color: #f4f4f4;
+  	font-family: 'Lato', sans-serif;
+  	font-size:16px;
+  	font-weight: 300;
+  	color:#333;
+  	overflow-x:hidden;
+}
+.hidden {
+	display: none;
+}
+h1,h2,h3,h4,h5 {
+	letter-spacing: 0.05em;
+	font-weight: 300;
+}
+h4 {
+	font-weight: 300;
+}
+#fold {
+	background-color:#fff;
+	position: relative;
+}
+#fold h1 {
+	color: #333;
+	font-size:26px;
+}
+#fold .sentence-col {
+	position: absolute;
+  z-index:999999999;
+	right: 0;
+	top:40px;
+}
+#fold p.sentence {
+	font-size: 22px;
+
+	color:#333;
+}
+#fold p.sentence b {
+	font-weight: 900;
+}
+.sentence #landStatus {
+	font-size:22px;
+}
+@media (max-width: 768px) {
+	#fold h1 {
+		font-size: 26px;
+	}
+	#fold p.sentence {
+		font-size:18px;
+	}
+}
+#toast {
+	line-height: 0;
+	margin-left: -15px;
+}
+#toast svg {
+
+	-webkit-transition: height 1000ms linear;
+	-moz-transition: height 1000ms linear;
+	-ms-transition: height 1000ms linear;
+	-o-transition: height 1000ms linear;
+	transition: height 1000ms linear;
+
+}
+#toast svg text {
+
+	font-size: 13px;
+	fill:#333;
+}
+
+
+#toast g.angle text {
+	fill:#555;
+	font-size:12px;
+}
+#toast #axes .axis {
+
+}
+#toast #axes .axis path {
+	stroke:#999;
+	stroke-width:1;
+	fill:none;
+	shape-rendering: crispEdges;
+}
+#toast #axes .axis .tick line {
+	stroke:#aaa;
+	stroke-width:1;
+	fill:none;
+	shape-rendering: crispEdges;
+}
+#toast #axes .axis .tick text{
+	font-size: 10px;
+	fill:#777;
+}
+#toast #axes .axis .tick.last text{
+	font-size: 20px;
+	fill:#333;
+}
+
+.ix rect {
+	fill:#000;
+	fill-opacity:0 !important;
+}
+.ix g.info {
+	display: none;
+}
+.ix:hover g.info {
+	display: block;
+}
+.ix g.info line {
+	stroke:#aaa;
+	stroke-width:1;
+	shape-rendering: crispEdges;
+}
+#toast .toast path.arrow {
+	fill-opacity:0;
+	fill:#ff2200;
+	stroke:none;
+}
+#toast .toast.safe path.arrow {
+	fill:#339933;
+}
+
+#toast .toast.last path.arrow/*,
+#toast .toast:hover path.arrow*/ {
+	fill-opacity:1;
+}
+#toast .toast.visible rect {
+	fill-opacity:1;
+}
+#toast .toast line.butter {
+	stroke:#FBBD04;
+	stroke-width:2;
+	stroke-opacity:0;
+	fill:none;
+	stroke-linecap: round;
+}
+#toast .toast circle.marker {
+	fill:#333;
+	stroke:none;
+}
+#toast .toast line.dropline {
+	stroke:#333;
+	stroke-width:1;
+	fill:none;
+	shape-rendering: crispEdges;
+	display: none;
+}
+#toast .toast:hover line.dropline {
+	display: block;
+}
+/*#toast .toast:hover rect {
+	fill-opacity:1;
+}
+#toast .toast:hover line.butter {
+	fill-opacity:1;
+}*/
+#toast .toast:hover line.butter,
+#toast .toast.visible line.butter {
+	stroke: #FBBD04;
+	stroke-opacity:1;
+}
+#toast .toast:hover rect.bread,
+#toast .toast.visible rect.bread {
+  fill-opacity:1;
+}

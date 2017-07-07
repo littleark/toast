@@ -1,0 +1,96 @@
+#toast #world #floor rect {
+	fill:#f4f4f4;
+}
+#toast #world #floor line {
+	stroke:#aaa;
+	stroke-width:1;
+	shape-rendering: crispEdges;
+
+}
+
+#toast svg g#bigToast,
+#toast svg g#table rect.tableEdge {
+	opacity:1;
+}
+#toast.settings svg g#bigToast,
+#toast.settings svg g#table rect.tableEdge {
+	opacity:1;
+}
+#toast svg g#bigToast rect.bread {
+	stroke:#E5A244;
+	stroke-width:3;
+	fill:#E4C072;
+	fill:url(#toastGradient);
+}
+#toast svg g#bigToast rect.butter {
+	stroke:none;
+	fill:#fff;
+	fill-opacity:0.4;
+}
+#toast svg g#bigToast line.butter {
+	stroke:#fff;
+	stroke-width:3;
+	stroke-linecap: round;
+}
+#toast svg g#bigToast line.lens {
+	stroke:#ddd;
+	stroke-width:1;
+	/*stroke-dasharray: 1 4;*/
+}
+#toast svg g#bigToast g.size path {
+	fill:none;
+	shape-rendering: crispEdges;
+	stroke:#aaa;
+	stroke-width:1;
+}
+#toast svg g#bigToast g.size rect {
+	fill:#fff;
+	shape-rendering: crispEdges;
+	stroke:none;
+}
+#toast svg g#bigToast g.size text {
+	text-anchor:middle;
+	fill:#aaa;
+}
+#toast svg g#bigToast:hover g.size path {
+	stroke:#333;
+}
+#toast svg g#bigToast:hover g.size text {
+	fill:#333;
+}
+#toast svg g#cup path {
+	fill:#111;
+	stroke:none;
+}
+#toast svg g#table rect {
+	fill:#111;
+	stroke:#fff;
+}
+#toast svg g#table rect {
+	/*stroke:#B09146;
+	fill:#E6C26D;*/
+	stroke-width:2;
+	shape-rendering: crispEdges;
+}
+#toast svg g#table rect.tableEdge {
+	stroke:none;
+	fill:#ddd;
+	fill:url(#tableEdge);
+	fill-opacity:0.4;
+}
+#toast svg g#table line.tableEdge {
+	stroke:#aaa;
+	shape-rendering: crispEdges;
+	/*stroke-dasharray: 4,4;*/
+}
+
+#toast svg g#table text.info {
+	text-anchor:middle;
+}
+#toast #table line.dropline {
+	stroke:#aaa;
+	stroke-width:1;
+	fill:none;
+	shape-rendering: crispEdges;
+	stroke-dasharray: 2,2;
+}
