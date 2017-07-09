@@ -12,7 +12,6 @@ import {data} from './components/Scene/config'
 import {calculateStatuses} from './lib/data'
 import App from './App'
 
-
 let store = createStore(toastApp,
                         window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
 
@@ -29,4 +28,4 @@ render(
   document.getElementById('root')
 )
 
-registerServiceWorker();
+registerServiceWorker()

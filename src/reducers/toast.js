@@ -8,14 +8,14 @@ const toast = (state = [], action) => {
         ...action.data
       }
     case 'UPDATE_TOAST_SIZE':
-      console.log("---->",action,state)
+      console.log('---->', action, state)
 
-      let toast = Object.assign({},state.toast,{a: action.size})
+      let toast = Object.assign({}, state.toast, {a: action.size})
 
       return Object.assign({}, state, {
         toast: toast
       })
-      //return state
+      // return state
       // return [
       //   ...state,
       //   {
@@ -27,13 +27,12 @@ const toast = (state = [], action) => {
     case 'UPDATE_TOAST_HANGOUT':
       return state
     case 'UPDATE_TABLE_HEIGHT':
-      console.log("---->",action,state)
-      let old_y = state.table.y
-      let table = Object.assign({},state.table,{y: action.height})
-      console.log("new table",table)
+      // console.log('---->', action, state)
+      let table = Object.assign({}, state.table, {y: action.height})
+      console.log('new table', table)
       return Object.assign({}, state, {
         table: table,
-        statuses: calculateStatuses({toast:state.toast,table:table})
+        statuses: calculateStatuses({toast: state.toast, table: table})
       })
     default:
       return state
