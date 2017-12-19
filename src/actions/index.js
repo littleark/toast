@@ -6,10 +6,10 @@ export const updateToastSize = size => {
   }
 }
 
-export const updateToastHangout = hangout => {
+export const updateToastOverhang = overhang => {
   return {
-    type: 'UPDATE_TOAST_HANGOUT',
-    hangout
+    type: 'UPDATE_TOAST_OVERHANG',
+    overhang
   }
 }
 
@@ -17,5 +17,12 @@ export const updateTableHeight = height => {
   return {
     type: 'UPDATE_TABLE_HEIGHT',
     height
+  }
+}
+
+export const updateToastShown = shown => {
+  return {
+    type: 'UPDATE_TOAST_SHOWN',
+    shown
   }
 }

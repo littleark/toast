@@ -8,6 +8,7 @@ import './fonts.css'
 import './App.css'
 
 import Scene from './components/Scene/Scene'
+import Sentence from './components/Sentence/Sentence'
 
 const mapStateToProps = state => {
   return {
@@ -20,17 +21,53 @@ const mapStateToProps = state => {
 const mapDispatchToProps = function (dispatch) {
   return {
     updateToastSize: (size) => { dispatch(actions.updateToastSize(size)) },
-    updateTableHeight: (height) => { dispatch(actions.updateTableHeight(height)) }
+    updateTableHeight: (height) => { dispatch(actions.updateTableHeight(height)) },
+    updateToastOverhang: (overhang) => { dispatch(actions.updateToastOverhang(overhang)) },
+    updateToastShown: (shown) => { dispatch(actions.updateToastShown(shown)) }
   }
 }
 
-class App extends Component {
 
+
+class App extends Component {
   constructor (props) {
     super(props)
+
+    this.state = {
+      y: 0
+    }
+  }
+  componentWillMount () {
+    this.current = {
+      y:0,
+      wheelDeltaY:0
+    }
+    const checkWheel = (e) => {
+      if(e && e.wheelDeltaY && e.wheelDeltaY !== this.current.wheelDeltaY) {
+        this.current.y = (e.wheelDeltaY < 0) ? this.current.y + 1 : this.current.y - 1
+        this.current.y = this.current.y < 0 ? 0 : this.current.y
+        this.current.wheelDeltaY = e.wheelDeltaY
+        console.log(this.current.y, e.wheelDeltaY)
+
+        this.setState({
+          y: this.current.y
+        })
+      }
+      requestAnimationFrame(() => checkWheel(this.e))
+    }
+
+
+
+    // document.addEventListener('mousewheel', (e) => {
+    //   this.e = e
+    // });
   }
 
   componentDidMount () {
+
+
+    
+
     var gui = new window.dat.GUI()
 
     var controllers = {
@@ -47,8 +84,11 @@ class App extends Component {
     })
 
     controllers['bread_size'].onFinishChange((value) => {
-      // console.log(value)
       this.props.updateToastSize(value)
+    })
+
+    controllers['overhang'].onFinishChange((value) => {
+      this.props.updateToastOverhang(value)
     })
     //
     // controllers["bread_weight"].onFinishChange(function(value) {
@@ -86,13 +126,18 @@ class App extends Component {
                 <div className='row'>
                   <div className='col-xs-12 col-sm-4 col-md-7 pull-right'>
                     <h1 className='text-uppercase'>Butter or Bread?</h1>
-                    <p className='sentence' id='sentence'>A <b id='breadSize'>15cm</b> large buttered toast,<br />hanging out <b id='breadOut'>6cm</b><br />from the border of a dining table, will <b id='breadAction'>fall</b>!<br /><em><span id='landStatus'>And land butter-side <b id='breadStatus'>down</b>!</span></em></p>
-                    <button onClick={this.changeSomething.bind(this)}>click me</button>
+                    <Sentence />
                   </div>
                 </div>
               </div>
+              <div className='col-xs-12' style={{position:'fixed', zIndex:999999999}}>
+                <Scene ref={el => {
+                  this.scene = el
+                }} y={this.state.y}
+                />
+              </div>
               <div className='col-xs-12'>
-                <Scene />
+                <div ref={el => this.scrollableDiv = el} style={{height:'4000px'}} />
               </div>
             </div>
           </div>

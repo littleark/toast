@@ -15,7 +15,7 @@ import {BIG_TOAST_HEIGHT, MIN_HEIGHT} from './config'
 import defs from './defs'
 
 import World from '../World/World'
-import Toast from '../Toast/Toast'
+import Toasts from '../Toasts/Toasts'
 
 const w = window
 const d = document
@@ -30,7 +30,7 @@ const margins = {
 }
 
 const mapStateToProps = state => {
-  console.log('mapStateToProps', state)
+  // console.log('mapStateToProps', state)
   return {
     statuses: state.toast.statuses,
     table: state.toast.table,
@@ -38,19 +38,39 @@ const mapStateToProps = state => {
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return { actions: bindActionCreators(actions, dispatch) }
+// function mapDispatchToProps (dispatch) {
+//   return { actions: bindActionCreators(actions, dispatch) }
+// }
+
+const mapDispatchToProps = function (dispatch) {
+  return {
+    actions: bindActionCreators(actions, dispatch),
+    updateToastShown: (shown) => { dispatch(actions.updateToastShown(shown)) }
+  }
 }
 
 class Scene extends Component {
-
   constructor (props) {
     super(props)
     this.state = {
-
+      y: 0,
     }
   }
+  componentWillMount () {
+    this.current = {
+      shown:0,
+    }
+    this.old = {
+      shown:0,
+    }
 
+    document.addEventListener('scroll', (e) => {
+      const scrollTop = e.target.scrollingElement.scrollTop;
+      // console.log('Scene', scrollTop)
+      this.current.shown = Math.floor(scrollTop * this.state.height/2000);
+      console.log('scroll', this.current.shown)
+    })
+  }
   componentDidMount () {
     let {table} = this.props
 
@@ -65,7 +85,7 @@ class Scene extends Component {
     }
 
     let factorX = WIDTH / HEIGHT
-
+    console.log('---------->', table.y * factorX, WIDTH, margins.left + margins.right)
     let xscale = scaleLinear().domain([0, table.y * factorX]).range([0, WIDTH - (margins.left + margins.right)])
     let yscale = scaleLinear().domain([0, table.y * 1]).range([HEIGHT - (margins.top + margins.bottom) + BIG_TOAST_HEIGHT, BIG_TOAST_HEIGHT])
     let hscale = scaleLinear().domain([0, table.y * 1]).range([0, HEIGHT - (margins.top + margins.bottom)])
@@ -81,7 +101,10 @@ class Scene extends Component {
         yscale: yscale,
         hscale: hscale
       }
+    }, () => {
+      this.checkScroll();
     })
+
   }
 
   componentWillReceiveProps (nextProps) {
@@ -95,6 +118,7 @@ class Scene extends Component {
       height: HEIGHT,
       scales: Object.assign({}, this.state.scales, {yscale: yscale})
     })
+
     // }
 
     /*
@@ -112,20 +136,37 @@ class Scene extends Component {
   //
   // }
 
+  checkScroll = () => {
+    // if((typeof this.current.shown !== 'undefined') && (this.props.toast.shown !== this.current.shown)) {
+    if(this.old.shown !== this.current.shown) {
+      // this.setState({
+      //   y: this.current.y
+      // })
+      // console.log(this.scene)
+      this.toasts.getWrappedInstance().updateShown(this.current.shown)
+      this.old.shown = this.current.shown;
+      //console.log(this.props.toast.shown, '!==', this.current.shown)
+      // this.props.updateToastShown(this.current.shown)
+      // if(this.scene) {
+      //     // this.scene.updatePosition(this.current.y);
+      // }
+    }
+    requestAnimationFrame(this.checkScroll)
+  }
+
   render () {
     if (!this.state.scales) {
       return <div id='toast' />
     }
-    console.log('!!!!', this.state.height)
+    // console.log('!!!!', this.state.height)
     return <div id='toast'>
       <svg width={this.state.width} height={this.state.height + BIG_TOAST_HEIGHT}>
         {defs}
         <World margins={margins} scales={this.state.scales} width={this.state.width} height={this.state.height} />
-        <Toast margins={margins} scales={this.state.scales} width={this.state.width} height={this.state.height} />
+        <Toasts ref={el => this.toasts = el} shown={0} margins={margins} scales={this.state.scales} width={this.state.width} height={this.state.height} />
       </svg>
     </div>
   }
-
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Scene)

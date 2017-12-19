@@ -9,11 +9,9 @@ const calculateStatuses = (options, silent = false) => {
     // console.log("############ SIMULATION #############");
   }
 
-  var statuses = []
-
-  var counter = 0
-
-  var t = 0,
+  var statuses = [],
+    counter = 0,
+    t = 0,
     Fp = 0, // perpendicular force
     Ff = 0, // friction force
     JC, // moment of inertia
@@ -27,9 +25,8 @@ const calculateStatuses = (options, silent = false) => {
     f = (options && options.toast && options.toast.f) ? options.toast.f : data.toast.f,
     g = (options && options.physics && options.physics.g) ? options.physics.g : data.physics.g,
     dt = (options && options.physics && options.physics.dt) ? options.physics.dt : data.physics.dt,
-    h = (options && options.table && options.table.y) ? options.table.y : data.table.y
-
-  var xC = 0,
+    h = (options && options.table && options.table.y) ? options.table.y : data.table.y,
+    xC = 0,
     yC = 0,
     phi = 0 // bread angle rad
 
@@ -95,8 +92,8 @@ const calculateStatuses = (options, silent = false) => {
 
   debug('Condition leaving the table ' + h + 'm', silent)
 
-  var vfx = vr * cos(phi),
-    vfy = vr * sin(phi)
+  let vfx = vr * cos(phi)
+  let vfy = vr * sin(phi)
 
   // while (yC <= h-data.toast.a/2) {
   while (h - yC >= 0) {
@@ -111,7 +108,7 @@ const calculateStatuses = (options, silent = false) => {
 
     // debug();
 
-    var alpha = phi % (Math.PI / 2)
+    let alpha = phi % (Math.PI / 2)
 
     if (phi > Math.PI / 2 && phi <= Math.PI) {
       alpha = Math.PI / 2 - alpha
@@ -121,7 +118,7 @@ const calculateStatuses = (options, silent = false) => {
       alpha = Math.PI / 2 - alpha
     }
 
-    var b = data.toast.a / 2 * Math.sin(alpha)
+    let b = data.toast.a / 2 * Math.sin(alpha)
 
     // console.log(h-yC,">",b)
 

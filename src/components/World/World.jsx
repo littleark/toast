@@ -24,5 +24,4 @@ const World = (props) => {
   </g>
 }
 
-// export default World
 export default connect(mapStateToProps)(World)

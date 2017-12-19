@@ -1,0 +1,85 @@
+#toast .toast {
+	opacity: 1;
+}
+#toast .toast.visible {
+	opacity: 1;
+}
+#toast .toast circle {
+	fill:#333;
+	fill-opacity:1;
+	stroke:none;
+}
+#toast .toast rect.bread {
+	fill:#E5A244;
+	fill:#000;
+	fill-opacity:0.2;
+	stroke:none;
+}
+#toast .toast path.arrow {
+	fill-opacity:0;
+	fill:#ff2200;
+	stroke:none;
+}
+#toast .toast.safe path.arrow {
+	fill:#339933;
+}
+
+#toast .toast.last path.arrow {
+	fill-opacity:1;
+}
+#toast .toast.visible rect {
+	fill-opacity:1;
+}
+#toast .toast line.butter {
+	stroke:#FBBD04;
+	stroke-width:2;
+	stroke-opacity:0;
+	fill:none;
+	stroke-linecap: round;
+}
+#toast .toast circle.marker {
+	fill:#333;
+	stroke:none;
+}
+#toast .toast line.dropline {
+	stroke:#333;
+	stroke-width:1;
+	fill:none;
+	shape-rendering: crispEdges;
+	display: none;
+}
+#toast .toast:hover line.dropline,
+#toast .toast.hover line.dropline {
+	display: block;
+}
+#toast .toast:hover line.butter,
+#toast .toast.hover line.butter,
+#toast .toast.visible line.butter {
+	stroke: #FBBD04;
+	stroke-opacity:1;
+}
+#toast .toast:hover rect.bread,
+#toast .toast.hover rect.bread,
+#toast .toast.visible rect.bread {
+  fill-opacity:1;
+}
+#toast .toast g.info text,
+#toast .toast g.info line {
+	visibility: hidden;
+}
+#toast .toast:hover g.info text,
+#toast .toast.hover g.info text,
+#toast .toast:hover g.info line,
+#toast .toast.hover g.info line {
+	visibility: visible;
+}
+#toast .toast g.info line {
+	stroke:#aaa;
+	stroke-width:1;
+	shape-rendering: crispEdges;
+}
+#toast .toast g.info rect {
+	stroke:none;
+	fill:#000;
+	fill-opacity:0;
+}

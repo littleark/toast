@@ -17,6 +17,7 @@ const data = {
       old_y:0.75, //table height m
       w:0.6, //table width
       h:0.04, //table thickness
+      leg: 0.6 - 0.08 - 0.07,
       default_height:2, //dining table
       heights: [
         {
@@ -50,7 +51,7 @@ const data = {
       a: 0.15, //bread dimension m (area=a*a)
       m: 24.0, //bread weight gr
       h: 0.014, // thickness of the toast m
-      r: 0.01, //initial hoverang m
+      r: 0.01, //initial overhang m
       f:0.5 //dynamic friction coefficient
     },
     positions:[],
