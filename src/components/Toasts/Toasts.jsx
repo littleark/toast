@@ -22,7 +22,7 @@ const mapStateToProps = state => {
 class Toast extends Component {
   setStatus(visible) {
     this.toast.classList.toggle('hover', visible)
-    console.log(this.toast)
+    // console.log(this.toast)
   }
   render () {
     const { width, margins, toast, table, xscale, yscale, hscale, classNames, rotate, x, y } = this.props;
@@ -76,13 +76,16 @@ class Toasts extends Component {
     this.hideToastList = [];
   }
 
-  updateShown = (index) => {
+  updateShown = (percentage) => {
+    const index = Math.floor((this.props.statuses.length - 1) * percentage);
+    console.log(index,this.props.statuses.length, percentage)
     if(this.toastList[index]) {
-      console.log(index, this.toastList[index])
+      //console.log(index, this.toastList[index])
       this.hideToastList.forEach(toast => toast.setStatus(false))
       this.hideToastList = [];
       this.toastList[index].setStatus(true)
       this.hideToastList.push(this.toastList[index])
+      // this.forceUpdate()
     }
   }
 

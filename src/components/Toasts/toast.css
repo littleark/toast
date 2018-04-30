@@ -12,7 +12,7 @@
 #toast .toast rect.bread {
 	fill:#E5A244;
 	fill:#000;
-	fill-opacity:0.2;
+	fill-opacity: 0.02;
 	stroke:none;
 }
 #toast .toast path.arrow {

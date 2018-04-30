@@ -64,15 +64,19 @@ class Scene extends Component {
       shown:0,
     }
 
-    document.addEventListener('scroll', (e) => {
-      const scrollTop = e.target.scrollingElement.scrollTop;
-      // console.log('Scene', scrollTop)
-      this.current.shown = Math.floor(scrollTop * this.state.height/2000);
-      console.log('scroll', this.current.shown)
-    })
+
   }
   componentDidMount () {
     let {table} = this.props
+
+    // document.querySelector('.parallax-wrapper').addEventListener('scroll', (e) => {
+    //   const scrollTop = e.target.scrollTop;
+    //
+    //   let __height = w.innerHeight || e.clientHeight || g.clientHeight
+    //   // console.log('Scene', scrollTop, __height, scrollTop / __height, this.state.height)
+    //   this.current.shown = scrollTop / __height;
+    //   console.log('scroll', this.current.shown)
+    // })
 
     let __width = w.innerWidth || e.clientWidth || g.clientWidth
     let __height = w.innerHeight || e.clientHeight || g.clientHeight
@@ -138,12 +142,34 @@ class Scene extends Component {
 
   checkScroll = () => {
     // if((typeof this.current.shown !== 'undefined') && (this.props.toast.shown !== this.current.shown)) {
+    const parallaxContainer = document.querySelector('.parallax-wrapper');
+    const scrollTop = parallaxContainer.scrollTop;
+    // console.log(scrollTop)
+    const bbox = parallaxContainer.getBoundingClientRect();
+    let __height = bbox.height * (this.props.sentences - 1); // w.innerHeight || e.clientHeight || g.clientHeight
+    this.current.shown = scrollTop / __height;
+
+    const parallax = document.querySelector('.parallax');
+    const parallaxBbox = parallax.getBoundingClientRect();
+    const h = parallaxBbox.height/2 - 250;
+    // addEventListener('scroll', (e) => {
+    //   const scrollTop = e.target.scrollTop;
+    //
+    //   let __height = w.innerHeight || e.clientHeight || g.clientHeight
+    //   // console.log('Scene', scrollTop, __height, scrollTop / __height, this.state.height)
+    //   this.current.shown = scrollTop / __height;
+    //   console.log('scroll', this.current.shown)
+    // })
+    //console.log('----->', scrollTop,this.current.shown)
     if(this.old.shown !== this.current.shown) {
-      // this.setState({
-      //   y: this.current.y
-      // })
-      // console.log(this.scene)
       this.toasts.getWrappedInstance().updateShown(this.current.shown)
+      const delta = parallaxBbox.height - scrollTop;
+      console.log('height', parallaxBbox.height)
+      console.log('scroll', scrollTop)
+      console.log(delta, '<' , h)
+      if(delta < h) {
+          parallax.style.transform = `translateY(${((delta - h))}px)`;
+      }
       this.old.shown = this.current.shown;
       //console.log(this.props.toast.shown, '!==', this.current.shown)
       // this.props.updateToastShown(this.current.shown)
@@ -151,6 +177,12 @@ class Scene extends Component {
       //     // this.scene.updatePosition(this.current.y);
       // }
     }
+    requestAnimationFrame(this.checkScroll)
+  }
+  checkScroll2 = () => {
+    const scrollTop = document.scrollingElement.scrollTop
+    console.log(scrollTop, scrollTop / 400)
+    this.toasts.getWrappedInstance().updateShown(scrollTop / 400)
     requestAnimationFrame(this.checkScroll)
   }
 

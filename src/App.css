@@ -1,6 +1,7 @@
 body {
   	background-color: #f4f4f4;
-  	font-family: 'Lato', sans-serif;
+  	font-family: 'Playfair Display', serif;
+
   	font-size:16px;
   	font-weight: 300;
   	color:#333;
@@ -16,6 +17,40 @@ h1,h2,h3,h4,h5 {
 h4 {
 	font-weight: 300;
 }
+/* .parallax-wrapper {
+  perspective: 2px;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.parallax-wrapper .parallax {
+  transform: translateZ(-2px) scale(1.5);
+  position: absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+} */
+.parallax-wrapper {
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.parallax-wrapper .parallax {
+  position: fixed;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+}
+/*
+.parallax-wrapper .parallax {
+  position: absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+} */
 #fold {
 	background-color:#fff;
 	position: relative;
@@ -23,12 +58,14 @@ h4 {
 #fold h1 {
 	color: #333;
 	font-size:26px;
+  margin: 0;
 }
 #fold .sentence-col {
-	position: absolute;
-  z-index:999999999;
-	right: 0;
-	top:40px;
+	// position: absolute;
+  position: relative;
+  // z-index:999999999;
+	// right: 0;
+	// top:40px;
 }
 #fold p.sentence {
 	font-size: 22px;

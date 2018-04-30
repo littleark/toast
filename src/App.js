@@ -66,7 +66,7 @@ class App extends Component {
   componentDidMount () {
 
 
-    
+
 
     var gui = new window.dat.GUI()
 
@@ -118,11 +118,23 @@ class App extends Component {
 
   render () {
     return (
-      <div className='container-fluid'>
+      <div className='container-fluid parallax-wrapper'>
         <div className='row'>
           <div id='fold' className='col-xs-12'>
+            <div className='row parallax'>
+              <div className='col-xs-12'>
+                <Scene ref={el => {
+                  this.scene = el
+                }} y={this.state.y}
+                  sentences={2}
+                />
+              </div>
+              {/* <div className='col-xs-12'>
+                <div ref={el => this.scrollableDiv = el} style={{height:'2000px'}} />
+              </div> */}
+            </div>
             <div className='row'>
-              <div className='pull-right sentence-col col-xs-12'>
+              <div className='pull-right sentence-col col-xs-12' style={{height: '100vh'}}>
                 <div className='row'>
                   <div className='col-xs-12 col-sm-4 col-md-7 pull-right'>
                     <h1 className='text-uppercase'>Butter or Bread?</h1>
@@ -130,15 +142,30 @@ class App extends Component {
                   </div>
                 </div>
               </div>
-              <div className='col-xs-12' style={{position:'fixed', zIndex:999999999}}>
-                <Scene ref={el => {
-                  this.scene = el
-                }} y={this.state.y}
-                />
+              <div className='pull-right sentence-col col-xs-12' style={{height: '100vh'}}>
+                <div className='row'>
+                  <div className='col-xs-12 col-sm-4 col-md-7 pull-right'>
+                    <h1 className='text-uppercase'>AAHHHHHHHHHH!!!!!!!</h1>
+                    <Sentence />
+                  </div>
+                </div>
               </div>
-              <div className='col-xs-12'>
-                <div ref={el => this.scrollableDiv = el} style={{height:'4000px'}} />
-              </div>
+              {/* <div className='pull-right sentence-col col-xs-12' style={{height: '100vh'}}>
+                <div className='row'>
+                  <div className='col-xs-12 col-sm-4 col-md-7 pull-right'>
+                <h1 className='text-uppercase'>AAHHHHHHHHHH!!!!!!!</h1>
+                <Sentence />
+                  </div>
+                </div>
+                </div>
+                <div className='pull-right sentence-col col-xs-12' style={{height: '100vh'}}>
+                <div className='row'>
+                  <div className='col-xs-12 col-sm-4 col-md-7 pull-right'>
+                <h1 className='text-uppercase'>AAHHHHHHHHHH!!!!!!!</h1>
+                <Sentence />
+                  </div>
+                </div>
+              </div> */}
             </div>
           </div>
         </div>
