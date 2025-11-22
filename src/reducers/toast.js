@@ -7,24 +7,28 @@ const toast = (state = [], action) => {
         statuses: action.statuses,
         ...action.data
       };
-    case "UPDATE_TOAST_SIZE":
+    case "UPDATE_TOAST_SIZE": {
+      const toastWithNewSize = {
+        ...state.toast,
+        a: action.size
+      };
       return {
         ...state,
-        toast: {
-          ...state.toast,
-          a: action.size
-        },
-        statuses: calculateStatuses({ toast: state.toast, table: table })
+        toast: toastWithNewSize,
+        statuses: calculateStatuses({ toast: toastWithNewSize, table: state.table })
       };
-    case "UPDATE_TOAST_OVERHANG":
+    }
+    case "UPDATE_TOAST_OVERHANG": {
+      const toastWithNewOverhang = {
+        ...state.toast,
+        r: action.overhang
+      };
       return {
         ...state,
-        toast: {
-          ...state.toast,
-          r: action.overhang
-        },
-        statuses: calculateStatuses({ toast: state.toast, table: table })
+        toast: toastWithNewOverhang,
+        statuses: calculateStatuses({ toast: toastWithNewOverhang, table: state.table })
       };
+    }
     case "UPDATE_TABLE_HEIGHT":
       // console.log('---->', action, state)
       let table = Object.assign({}, state.table, { y: action.height });

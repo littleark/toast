@@ -61,11 +61,7 @@ h4 {
   margin: 0;
 }
 #fold .sentence-col {
-	// position: absolute;
   position: relative;
-  // z-index:999999999;
-	// right: 0;
-	// top:40px;
 }
 #fold p.sentence {
 	font-size: 22px;

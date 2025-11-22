@@ -1,12 +1,7 @@
-import 'core-js/es6/map';
-import 'core-js/es6/set';
-import 'raf/polyfill';
-
 import React from 'react'
-import { render } from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
-import registerServiceWorker from './registerServiceWorker'
 import toastApp from './reducers'
 
 import './index.css'
@@ -25,11 +20,11 @@ store.dispatch({
   statuses: calculateStatuses(data)
 })
 
-render(
+const container = document.getElementById('root')
+const root = createRoot(container)
+
+root.render(
   <Provider store={store}>
     <App />
-  </Provider>,
-  document.getElementById('root')
+  </Provider>
 )
-
-registerServiceWorker()

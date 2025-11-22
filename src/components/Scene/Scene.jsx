@@ -162,7 +162,9 @@ class Scene extends Component {
     // })
     //console.log('----->', scrollTop,this.current.shown)
     if(this.old.shown !== this.current.shown) {
-      this.toasts.getWrappedInstance().updateShown(this.current.shown)
+      if (this.toasts) {
+        this.toasts.updateShown(this.current.shown)
+      }
       const delta = parallaxBbox.height - scrollTop;
       console.log('height', parallaxBbox.height)
       console.log('scroll', scrollTop)
@@ -182,7 +184,9 @@ class Scene extends Component {
   checkScroll2 = () => {
     const scrollTop = document.scrollingElement.scrollTop
     console.log(scrollTop, scrollTop / 400)
-    this.toasts.getWrappedInstance().updateShown(scrollTop / 400)
+    if (this.toasts) {
+      this.toasts.updateShown(scrollTop / 400)
+    }
     requestAnimationFrame(this.checkScroll)
   }
 

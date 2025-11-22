@@ -194,4 +194,4 @@ const ToastInfo = props => {
   );
 };
 
-export default connect(mapStateToProps, null, null, { withRef: true })(Toasts);
+export default connect(mapStateToProps, null, null, { forwardRef: true })(Toasts);
